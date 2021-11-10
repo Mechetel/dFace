@@ -1,0 +1,29 @@
+version: '3.9'
+
+volumes:
+  postgres:
+
+services:
+  postgres:
+    image: postgres:13
+    env_file:
+      - secret-envs/postgres-credentials-initial.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  be:
+    build:
+      context: dockerfiles
+      dockerfile: be.Dockerfile
+    command: >
+      python manage.py runserver 0.0.0.0:3000
+    volumes:
+      - ..:/app
+    ports:
+      - 3000:3000
+    env_file:
+      - secret-envs/secret-key-base.env
+      - secret-envs/database-url.env
+    depends_on:
+      - postgres
+    restart: on-failure
