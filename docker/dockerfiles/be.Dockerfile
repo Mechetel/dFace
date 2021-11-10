@@ -14,6 +14,7 @@ RUN mkdir /app && chown -R $APP_USER:$APP_USER /app
 
 WORKDIR /app
 
+RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install Django psycopg2 django-environ
 
 USER $APP_USER
