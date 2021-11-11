@@ -16,7 +16,8 @@ services:
       context: dockerfiles
       dockerfile: be.Dockerfile
     command: >
-      python manage.py runserver 0.0.0.0:3000
+      /bin/bash -c "
+      python manage.py runserver 0.0.0.0:3000"
     volumes:
       - ..:/app
     ports:
