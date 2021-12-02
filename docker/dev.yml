@@ -17,6 +17,7 @@ services:
       dockerfile: be.Dockerfile
     command: >
       /bin/bash -c "
+      python manage.py migrate &&
       python manage.py runserver 0.0.0.0:3000"
     volumes:
       - ..:/app
@@ -25,5 +26,7 @@ services:
     env_file:
       - secret-envs/secret-key-base.env
       - secret-envs/database-url.env
+    environment:
+      DEBUG: "true"
     depends_on:
       - postgres
