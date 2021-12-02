@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    'ai_camera',
+    'researches',
 ]
 
 MIDDLEWARE = [
