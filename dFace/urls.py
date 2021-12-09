@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('main.urls')),
     path('researches/', include('researches.urls')),
     path('ai_camera/', include('ai_camera.urls')),
+    path('', include('django.contrib.auth.urls')),
 ]
