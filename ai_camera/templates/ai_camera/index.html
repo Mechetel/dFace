@@ -12,6 +12,7 @@
     <h1>Hello: {{ user.username }}</h1>
 
     {% if user_is_member %}
+      <p>{{ user_is_member }}</p>
       <h1>MAIN CONTENT</h1>
     {% else %}
       <p>You have no rights to visit this page</p>
