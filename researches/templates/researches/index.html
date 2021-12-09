@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
+{% extends 'main/base.html' %}
+
+{% block title %}
   <title>Researches</title>
-</head>
-<body>
+{% endblock title %}
+
+{% block content %}
   <h1>researches main</h1>
-</body>
-</html>
+  <p>Welcome to researches page where you are can........ create and work with python (in future)</p>
+
+  {% if request.user.is_authenticated %}
+    <h1>Hello: {{ user.username }}</h1>
+  {% else %}
+    <p>User is not logged in :(</p>
+  {% endif %}
+{% endblock content %}

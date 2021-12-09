@@ -1,22 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
+{% extends 'ai_camera/base.html' %}
+
+{% block title %}
   <title>AI_camera</title>
-</head>
-<body>
+{% endblock title %}
+
+{% block content %}
   <h1>ai_camera main</h1>
+  <p>Welcome to camera page where you are can watch in camera and work with ML</p>
 
   {% if request.user.is_authenticated %}
+    <h1>Hello: {{ user.username }}</h1>
+
     {% if user_is_member %}
-
-      <p>Welcome to camera page where you are can watch in camera and work with ML</p>
-
+      <h1>MAIN CONTENT</h1>
     {% else %}
       <p>You have no rights to visit this page</p>
     {% endif %}
   {% else %}
     <p>User is not logged in :(</p>
   {% endif %}
-</body>
-</html>
+{% endblock content %}

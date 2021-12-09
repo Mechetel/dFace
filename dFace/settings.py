@@ -130,6 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
