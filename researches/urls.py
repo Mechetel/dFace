@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
+from .views import ResearchView
 
 
 urlpatterns = [
-    path('', views.index, name="researches_index"),
+    path('', ResearchView.as_view(), name="researches_index"),
 ]

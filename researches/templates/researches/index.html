@@ -9,7 +9,11 @@
   <p>Welcome to researches page where you are can........ create and work with python (in future)</p>
 
   {% if request.user.is_authenticated %}
-    <h1>Hello: {{ user.username }}</h1>
+
+
+    ##################
+
+
   {% else %}
     <p>User is not logged in :(</p>
   {% endif %}

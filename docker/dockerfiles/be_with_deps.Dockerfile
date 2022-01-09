@@ -5,7 +5,7 @@ USER root
 ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update -qq && apt-get install -y \
-     nano
+     nano net-tools
 
 WORKDIR /app
 

@@ -1,0 +1,18 @@
+{% extends 'ai_camera/base.html' %}
+
+{% block title %}
+  <title>AI_camera</title>
+{% endblock title %}
+
+{% block content %}
+  {% if user_is_member %}
+
+
+    {{camera.name}}
+    <a class="p-2" href="{% url 'ai_camera_index' %}">Go back</a>
+
+
+    {% else %}
+    <p>You have no rights to visit this page</p>
+  {% endif %}
+{% endblock content %}

@@ -1,7 +1,8 @@
 from django.urls import path
-from . import views
+from .views import CameraView, CameraListView
 
 
 urlpatterns = [
-    path('', views.index, name="ai_camera_index"),
+    path('', CameraListView.as_view(), name="ai_camera_index"),
+    path('camera/<int:pk>/', CameraView.as_view(), name='camera'),
 ]
