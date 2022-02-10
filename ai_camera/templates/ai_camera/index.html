@@ -7,7 +7,7 @@
 {% block content %}
   <h1>ai_camera main</h1>
   <p>Welcome to camera page where you are can watch in camera and work with ML</p>
-  {% if user_is_member %}
+  {% if user.is_staff %}
 
 
     <ul>

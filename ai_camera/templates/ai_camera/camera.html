@@ -5,10 +5,11 @@
 {% endblock title %}
 
 {% block content %}
-  {% if user_is_member %}
+  {% if user.is_staff %}
 
 
     {{camera.name}}
+    </br>
     <a class="p-2" href="{% url 'ai_camera_index' %}">Go back</a>
 
 
