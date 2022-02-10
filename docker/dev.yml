@@ -17,8 +17,9 @@ services:
       dockerfile: be.Dockerfile
     command: >
       /bin/bash -c "
+      python manage.py makemigrations &&
+      python manage.py migrate &&
       python manage.py runserver 0.0.0.0:3000"
-    entrypoint: /entrypoint.sh
     volumes:
       - ..:/app
     ports:
