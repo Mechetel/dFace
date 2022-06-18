@@ -9,6 +9,7 @@
   <p>Welcome to camera page where you are can watch in camera and work with ML</p>
   {% if user.is_staff %}
 
+    <img src = "{% url 'video_feed' %}">
 
     <ul>
       {% for camera in camera_list %}
