@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import environ
-
+import os
 
 env = environ.Env()
 environ.Env.read_env()
@@ -138,7 +138,9 @@ AUTHENTICATION_BACKENDS = (
         )
 
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'main/static'),
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
