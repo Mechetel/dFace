@@ -1,16 +1,17 @@
-{% extends 'ai_camera/base.html' %}
+{% extends 'main/base.html' %}
+{% load static %}
 
 {% block title %}
   <title>AI_camera</title>
 {% endblock title %}
 
 {% block content %}
-  <h1>ai_camera main</h1>
-  <p>Welcome to camera page where you are can watch in camera and work with ML</p>
+  <h1 class="p-2">ai_camera main</h1>
+  <p class="p-2">Welcome to camera page where you are can watch in camera and work with ML</p>
   {% if user.is_staff %}
 
-    <img src = "{% url 'video_feed' %}">
-
+    <a class="p-2" href="{% url 'cv_camera' %}">Watch on server's camera with OpenCV</a>
+    <a class="p-2" href="{% url 'webrtc_camera' %}">Watch on client camera with WebRTC</a>
     <ul>
       {% for camera in camera_list %}
         <li><a href="{% url 'camera' camera.pk %}">{{ camera.name }}</li>

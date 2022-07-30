@@ -1,13 +1,16 @@
-{% extends 'ai_camera/base.html' %}
+{% extends 'main/base.html' %}
+{% load static %}
 
 {% block title %}
-  <title>AI_camera</title>
+  <title>CV_Camera</title>
 {% endblock title %}
 
 {% block content %}
   {% if user.is_staff %}
 
-    {{camera.name}}
+    <h1>CV_Camera from server</h1>
+    </br>
+    <img src = "{% url 'cv_camera' %}">
     </br>
     <a class="p-2" href="{% url 'ai_camera_index' %}">Go back</a>
 

@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
-*{
-  font-family: 'Poppins', sans-serif;
+* {
+  font-family: "Poppins", sans-serif;
 }
 
 html,
@@ -15,8 +15,8 @@ body {
   flex-wrap: wrap;
 }
 
-.logo{
-  background-color: #FF6766;
+.logo {
+  background-color: #ff6766;
   justify-content: center;
   align-items: center;
   font-style: italic;
@@ -24,13 +24,13 @@ body {
   width: 100%;
   display: flex;
 }
-.logo-text{
+.logo-text {
   margin-top: 70px;
   font-size: xx-large;
 }
 
 .box-1 {
-  background-color: #FF6766;
+  background-color: #ff6766;
   height: 23.33%;
   width: 100%;
   display: flex;
@@ -38,7 +38,7 @@ body {
   align-items: center;
 }
 .box-2 {
-  background-color: #3C3C3C;
+  background-color: #3c3c3c;
   height: 33.33%;
   width: 100%;
   display: flex;
@@ -46,7 +46,7 @@ body {
   align-items: center;
 }
 .box-3 {
-  background-color: #66A182;
+  background-color: #66a182;
   height: 33.33%;
   width: 100%;
   display: flex;
@@ -62,7 +62,6 @@ body {
   width: 250px;
   cursor: pointer;
 }
-
 
 a {
   text-decoration: none;
@@ -85,21 +84,9 @@ a:before {
   transform-origin: left;
   transform: scale(0);
   transition: 0.25s linear;
-/*   will-change: transform; */
+  /*   will-change: transform; */
 }
 
 a:hover:before {
   transform: scale(1);
-}
-
-.btn-camera{
-
-}
-
-.btn-research{
-
-}
-
-.btn-about{
-
 }

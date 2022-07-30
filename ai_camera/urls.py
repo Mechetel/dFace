@@ -1,9 +1,17 @@
 from django.urls import path
-from .views import CameraListView, ip_camera_view, video_feed
+from .views import (
+            CameraListView,
+            cv_camera,
+            rtc_stream,
+            offer,
+            api,
+            )
 
 
 urlpatterns = [
     path('', CameraListView.as_view(), name="ai_camera_index"),
-    path('camera/<int:id>/', ip_camera_view, name='camera'),
-    path('video_feed', video_feed, name='video_feed'),
+    # path('camera/<int:id>/', ip_camera_view, name='camera'),
+    path('cv_camera/', cv_camera, name='cv_camera'),
+    path('webrtc_camera/', rtc_stream, name='webrtc_camera'),
+    path('api/', api.urls, name='offer'),
 ]

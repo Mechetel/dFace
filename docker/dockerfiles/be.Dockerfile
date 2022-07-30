@@ -7,17 +7,7 @@ ENV QT_X11_NO_MITSHM 1
 
 RUN apt-get update -qq && apt-get install -y \
       nano\
-      net-tools\
-      bzip2 \
-      g++ \
-      git \
-      graphviz \
-      libgl1-mesa-glx \
-      libhdf5-dev \
-      openmpi-bin \
-      wget \
-      python3-tk && \
-    rm -rf /var/lib/apt/lists/*
+      python3-opencv
 
 ENV APP_USER app
 
@@ -42,6 +32,9 @@ RUN pip3 install Django \
                  pynvim \
                  aiortc \
                  asyncio \
-                 psycopg2
+                 psycopg2 \
+                 django-ninja
 
 USER $APP_USER
+
+EXPOSE 3000
