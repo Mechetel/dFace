@@ -3,8 +3,8 @@ from .views import (
             CameraListView,
             cv_camera,
             rtc_stream,
-            offer,
-            api,
+
+            api, offer,
             )
 
 

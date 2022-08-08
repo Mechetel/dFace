@@ -23,12 +23,11 @@ RUN (apt-get autoremove -y; apt-get autoclean -y)
 RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip3 install Django \
                  django-environ \
-                 keras \
+                 # keras \
                  neovim \
-                 numpy \
+                 # numpy \
                  opencv-python \
-                 torch \
-                 facenet-pytorch \
+                 # facenet-pytorch \
                  pynvim \
                  aiortc \
                  asyncio \
@@ -37,4 +36,4 @@ RUN pip3 install Django \
 
 USER $APP_USER
 
-EXPOSE 3000
+# EXPOSE 3000

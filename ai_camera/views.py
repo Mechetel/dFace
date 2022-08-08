@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import (
                                 User,
-                                Group,
+                                Group
                                 )
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators import gzip
@@ -9,23 +9,26 @@ from django.utils.decorators import method_decorator
 from django.http import (
                  StreamingHttpResponse,
                  JsonResponse,
+                 FileResponse
                  )
 from django.shortcuts import render
 from django.views import generic
 from aiortc import (
             RTCSessionDescription,
-            RTCPeerConnection,
-            RTCConfiguration,
-            RTCIceServer
+            RTCPeerConnection
             )
+from ninja import NinjaAPI
 
-from .video_camera import VideoCamera
+from .video_camera import VideoCamera, gen
 from .video_transform_track import VideoTransformTrack
 from .models import Camera
-from .utils import gen
-from ninja import NinjaAPI
+from .schemas import Offer
+import os
 import json
+import asyncio
 
+api = NinjaAPI()
+pcs = set()
 
 @method_decorator(login_required(login_url='/login/'), name='dispatch')
 class CameraListView(generic.ListView):
@@ -46,22 +49,14 @@ def cv_camera(request):
 def rtc_stream(request):
     return render(request, 'ai_camera/stream.html')
 
-pcs = set()
-api = NinjaAPI()
 
 @csrf_exempt
 @api.post("offer/")
 async def offer(request):
-    # params = await request.json()
-    # offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
     json_data = json.loads(request.body)
-    offer = RTCSessionDescription(sdp=json_data['sdp'], type=json_data['type'])
+    rtc_session_description = RTCSessionDescription(sdp=json_data['sdp'], type=json_data['type'])
 
-    pc = RTCPeerConnection(
-        configuration=RTCConfiguration(
-            iceServers=[RTCIceServer(urls="stun:stun.l.google.com:19302")]
-        )
-    )
+    pc = RTCPeerConnection()
     pcs.add(pc)
 
     @pc.on("connectionstatechange")
@@ -77,8 +72,12 @@ async def offer(request):
                 VideoTransformTrack(track, transform=json_data['video_transform'])
             )
 
-    await pc.setRemoteDescription(offer)
+    # handle rtc_session_description
+    await pc.setRemoteDescription(rtc_session_description)
+
+    # send answer
     answer = await pc.createAnswer()
+    await pc.setRemoteDescription(rtc_session_description)
     await pc.setLocalDescription(answer)
 
     return JsonResponse({"sdp": pc.localDescription.sdp, "type": pc.localDescription.type})
