@@ -62,7 +62,7 @@ function negotiate() {
 
       document.getElementById('offer-sdp').textContent = offer.sdp;  //debugging to html
 
-      return fetch("/ai_camera/api/offer/", {
+      return fetch("/ai_camera/api/offer", {
         body: JSON.stringify({
           sdp: offer.sdp,
           type: offer.type,

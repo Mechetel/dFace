@@ -32,8 +32,7 @@ RUN pip3 install Django \
                  aiortc \
                  asyncio \
                  psycopg2 \
+                 pydantic \
                  django-ninja
 
 USER $APP_USER
-
-# EXPOSE 3000

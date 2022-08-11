@@ -2,12 +2,11 @@ ML project to recognise people on cameras
 Using docker, django, postgres
 
 To run on localhost:
-docker-compose -f docker/dev.yml -p dFace_dev up --build
+docker-compose -f docker/dev.yml up --build
 
 To createsuperuser:
 docker-compose \
   -f docker/dev.yml \
-  -p dFace_dev \
   run --rm be python manage.py createsuperuser
 
 To stop all containers:

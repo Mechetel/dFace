@@ -8,7 +8,6 @@ from django.views.decorators import gzip
 from django.utils.decorators import method_decorator
 from django.http import (
                  StreamingHttpResponse,
-                 JsonResponse,
                  FileResponse
                  )
 from django.shortcuts import render
@@ -22,10 +21,16 @@ from ninja import NinjaAPI
 from .video_camera import VideoCamera, gen
 from .video_transform_track import VideoTransformTrack
 from .models import Camera
-from .schemas import Offer
 import os
 import json
 import asyncio
+
+
+from pydantic import BaseModel
+class Offer(BaseModel):
+    sdp: str
+    type: str
+    video_transform: str = None
 
 api = NinjaAPI()
 pcs = set()
@@ -50,11 +55,10 @@ def rtc_stream(request):
     return render(request, 'ai_camera/stream.html')
 
 
-@csrf_exempt
-@api.post("offer/")
+@api.post("offer")
 async def offer(request):
-    json_data = json.loads(request.body)
-    rtc_session_description = RTCSessionDescription(sdp=json_data['sdp'], type=json_data['type'])
+    params = json.loads(request.body)
+    offer = RTCSessionDescription(sdp=params['sdp'], type=params['type'])
 
     pc = RTCPeerConnection()
     pcs.add(pc)
@@ -69,15 +73,11 @@ async def offer(request):
     def on_track(track):
         if track.kind == "video":
             pc.addTrack(
-                VideoTransformTrack(track, transform=json_data['video_transform'])
+                VideoTransformTrack(track, transform=params['video_transform'])
             )
 
-    # handle rtc_session_description
-    await pc.setRemoteDescription(rtc_session_description)
-
-    # send answer
+    await pc.setRemoteDescription(offer)
     answer = await pc.createAnswer()
-    await pc.setRemoteDescription(rtc_session_description)
     await pc.setLocalDescription(answer)
 
-    return JsonResponse({"sdp": pc.localDescription.sdp, "type": pc.localDescription.type})
+    return {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
