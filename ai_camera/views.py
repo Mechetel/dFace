@@ -16,18 +16,18 @@ from aiortc import (
             RTCSessionDescription,
             RTCPeerConnection
             )
-from ninja import NinjaAPI
+from ninja import (
+        NinjaAPI,
+        Schema
+        )
 
 from .video_camera import VideoCamera, gen
 from .video_transform_track import VideoTransformTrack
 from .models import Camera
-import os
-import json
 import asyncio
 
 
-from pydantic import BaseModel
-class Offer(BaseModel):
+class Offer(Schema):
     sdp: str
     type: str
     video_transform: str = None
@@ -56,9 +56,8 @@ def rtc_stream(request):
 
 
 @api.post("offer")
-async def offer(request):
-    params = json.loads(request.body)
-    offer = RTCSessionDescription(sdp=params['sdp'], type=params['type'])
+async def offer(request, params: Offer):
+    offer = RTCSessionDescription(sdp=params.sdp, type=params.type)
 
     pc = RTCPeerConnection()
     pcs.add(pc)
@@ -73,7 +72,7 @@ async def offer(request):
     def on_track(track):
         if track.kind == "video":
             pc.addTrack(
-                VideoTransformTrack(track, transform=params['video_transform'])
+                VideoTransformTrack(track, transform=params.video_transform)
             )
 
     await pc.setRemoteDescription(offer)

@@ -4,7 +4,7 @@ from .views import (
             cv_camera,
             rtc_stream,
 
-            api, offer,
+            api,
             )
 
 
