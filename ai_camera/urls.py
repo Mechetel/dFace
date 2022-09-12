@@ -2,17 +2,11 @@ from django.urls import path
 from .views import (
             CameraListView,
             rtc_stream,
-<<<<<<< HEAD
-
-            api,
-            )
-=======
             ip_camera_view,
             playback,
             playback_view,
             image_loader
         )
->>>>>>> bc4fedf (feat: major improvement)
 
 
 urlpatterns = [

@@ -3,37 +3,11 @@ from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.shortcuts import render
 from django.views import generic
-<<<<<<< HEAD
-from aiortc import (
-            RTCSessionDescription,
-            RTCPeerConnection
-            )
-from ninja import (
-        NinjaAPI,
-        Schema
-        )
-
-from .video_camera import VideoCamera, gen
-from .video_transform_track import VideoTransformTrack
-from .models import Camera
-import asyncio
-
-
-class Offer(Schema):
-    sdp: str
-    type: str
-    video_transform: str = None
-
-api = NinjaAPI()
-pcs = set()
-
-=======
 from django.http import HttpResponse
 from .models import Camera, PlaybackVideo
 import os
 
 
->>>>>>> bc4fedf (feat: major improvement)
 @method_decorator(login_required(login_url='/login/'), name='dispatch')
 class CameraListView(generic.ListView):
     model = Camera
@@ -97,41 +71,14 @@ def rtc_stream(request):
     return render(request, 'ai_camera/rtc_stream.html')
 
 
-<<<<<<< HEAD
-@api.post("offer")
-async def offer(request, params: Offer):
-    offer = RTCSessionDescription(sdp=params.sdp, type=params.type)
-=======
 @login_required(login_url='/login/')
 def image_loader(request):
     return render(request, 'ai_camera/image_loader.html')
->>>>>>> bc4fedf (feat: major improvement)
 
 
-<<<<<<< HEAD
-    @pc.on("connectionstatechange")
-    async def on_connectionstatechange():
-        if pc.connectionState == "failed":
-            await pc.close()
-            pcs.discard(pc)
-
-    @pc.on("track")
-    def on_track(track):
-        if track.kind == "video":
-            pc.addTrack(
-                VideoTransformTrack(track, transform=params.video_transform)
-            )
-
-    await pc.setRemoteDescription(offer)
-    answer = await pc.createAnswer()
-    await pc.setLocalDescription(answer)
-
-    return {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
-=======
 # @csrf_exempt
 # @require_POST
 # def predict_image(request):
 #     image = request.FILES.get('image')
 #     result = predict(image)
 #     return HttpResponse(result, content_type='image/jpeg')
->>>>>>> bc4fedf (feat: major improvement)
