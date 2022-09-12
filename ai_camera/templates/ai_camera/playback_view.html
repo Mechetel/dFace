@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+  <title>IP_camera</title>
+{% endblock title %}
+
+{% block content %}
+  {% if user.is_staff %}
+
+    <div class="text-center">
+      <video controls>
+        <source src="{{ playback.video.url }}" type="video/mp4">
+      </video>
+    </div>
+
+  {% else %}
+    <p>You have no rights to visit this page</p>
+  {% endif %}
+{% endblock content %}

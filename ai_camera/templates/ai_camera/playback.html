@@ -1,0 +1,37 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+  <title>IP_camera</title>
+{% endblock title %}
+
+{% block content %}
+  {% if user.is_staff %}
+    <div class="container text-center mt-3">
+      <div class="row">
+        <div class="col align-self-center">
+          <h1>Playback</h1>
+        </div>
+        <div class="col align-self-center">
+          <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-success" type="submit">Download latest playbacks from camera: {{camera.name}}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% if playbacks.all.count > 0 %}
+      <div class="text-center">
+        {% for playback in playbacks %}
+          <a href="{% url 'playback_view' camera.pk playback.pk %}"><i class="fa-solid fa-video"></i> {{ playback.headline }}</a><br>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center m-5">
+        <h1>No playbacks yet</h1>
+      </div>
+    {% endif %}
+  {% else %}
+    <p>You have no rights to visit this page</p>
+  {% endif %}
+{% endblock content %}
