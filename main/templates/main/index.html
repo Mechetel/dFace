@@ -5,6 +5,8 @@
     <meta charset="UTF-8" />
     <title>dFace</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
   </head>
   <body>
     <div class="logo">
@@ -14,19 +16,19 @@
     </div>
     <div class="box-1">
       <div class="btn btn-camera">
-        <a href="/ai_camera">AI camera</a>
+        <a href="/ai_camera"><i class="fa-solid fa-video"></i> AI camera</a>
       </div>
     </div>
 
     <div class="box-2">
       <div class="btn btn-research">
-        <a href="/researches">Research</a>
+        <a href="/researches"><i class="fa-solid fa-flask"></i> Research</a>
       </div>
     </div>
 
     <div class="box-3">
       <div class="btn btn-about">
-        <a href="{% url 'about' %}">About us</a>
+        <a href="{% url 'about' %}"><i class="fa-solid fa-comment"></i> About us</a>
       </div>
     <div/>
   </body>

@@ -1,0 +1,46 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block b_st %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/camera.css' %}">
+{% endblock b_st %}
+
+{% block title %}
+  <title>WebRTC_Camera</title>
+{% endblock title %}
+
+
+{% block content %}
+  {% if user.is_staff %}
+
+    <div class="p-3">
+      <button id="btn-start"   type="button" class="btn btn-success">Start Streaming</button>
+      <button id="btn-stop"    type="button" class="btn btn-danger">Stop Streaming</button>
+      <button id="btn-capture" type="button" class="btn btn-warning">Capture Image</button>
+    </div>
+
+    <!-- Video Element & Canvas -->
+    <div class="text-center m-2 bg-opacity-10 border border-info rounded">
+      <div class="row p-3">
+        <div class="col">
+          <h3>The Stream</h3>
+          <video id="stream" width="640" height="480"></video>
+        </div>
+        <div class="col">
+          <h3>The Capture</h3>
+          <canvas id="canvas" width="640" height="480"></canvas>
+          <div id="snapshot"></div>
+        </div>
+      </div>
+    </div>
+
+
+    {% else %}
+    <p>You have no rights to visit this page</p>
+  {% endif %}
+
+  <a href="{% url 'ai_camera' %}">Go back</a>
+
+  <script type="text/javascript" src="{% static 'js/rtc_camera.js' %}"></script>
+{% endblock content %}
+

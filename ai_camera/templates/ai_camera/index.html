@@ -6,18 +6,50 @@
 {% endblock title %}
 
 {% block content %}
-  <h1 class="p-2">ai_camera main</h1>
-  <p class="p-2">Welcome to camera page where you are can watch in camera and work with ML</p>
   {% if user.is_staff %}
 
-    <a class="p-2" href="{% url 'cv_camera' %}">Watch on server's camera with OpenCV</a>
-    <a class="p-2" href="{% url 'webrtc_camera' %}">Watch on client camera with WebRTC</a>
-    <ul>
-      {% for camera in camera_list %}
-        <li><a href="{% url 'camera' camera.pk %}">{{ camera.name }}</li>
-      {% endfor %}
-    </ul>
+    <div class="container text-center mt-3">
+      <h1>AI Camera</h1>
+      <p>Welcome to camera page where you are can watch in camera and work with ML</p>
+      <div class="row">
+        <div class="col">
+          <a href="{% url 'webrtc_camera' %}" class="btn btn-primary"><i class="fa-solid fa-camera"></i> Watch on client camera with WebRTC</a>
+        </div>
+        <div class="col">
+          <a href="{% url 'image_loader' %}"class="btn btn-primary"><i class="fa-solid fa-download"></i> Upload image for next process</a>
+        </div>
+      </div>
+    </div>
 
+
+    {% if camera_list.all.count > 0 %}
+
+      <div class="container mt-3">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            {% for camera in camera_list %}
+              <tr>
+                <th>{{ camera.id }}</th>
+                <td><a href="{% url 'camera' camera.pk %}">{{ camera.name }}</td>
+                <td>{{ camera.description }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    {% else %}
+      <div class="text-center m-5">
+        <h1>No IP-cameras yet</h1>
+      </div>
+    {% endif %}
 
   {% else %}
     <p>You have no rights to visit this page</p>

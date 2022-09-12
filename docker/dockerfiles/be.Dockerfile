@@ -24,15 +24,15 @@ RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip3 install Django \
                  django-environ \
                  # keras \
-                 neovim \
                  # numpy \
-                 opencv-python \
                  # facenet-pytorch \
+                 neovim \
+                 opencv-python \
                  pynvim \
-                 aiortc \
-                 asyncio \
                  psycopg2 \
                  pydantic \
-                 django-ninja
+                 fontawesomefree \
+                 hikload
+
 
 USER $APP_USER

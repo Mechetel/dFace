@@ -1,0 +1,51 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block b_st %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/camera.css' %}">
+{% endblock b_st %}
+
+{% block title %}
+  <title>IP_camera</title>
+{% endblock title %}
+
+{% block content %}
+  <div class="container text-center">
+    <h1>IP-camera</h1>
+    <p>Welcome to ip-camera page where you are can watch in ip-camera and work with ML</p>
+  </div>
+  {% if user.is_staff %}
+
+  <div class="container text-center">
+    <div class="row">
+      <div class="col">
+        <h3>{{camera.name}}</h3><p>{{camera.description}}</p>
+      </div>
+      <div class="col align-self-center">
+        <button class="btn btn-warning" id="btn-capture" type="button" onclick="captureSnapshot('{{camera.ip_cam_adress}}')"><i class="fa-solid fa-camera-retro"></i> Capture Image</button>
+      </div>
+      <div class="col align-self-center">
+        <a href="{% url 'playback' camera.pk %}" class="btn btn-info"><i class="fa-solid fa-film"></i> Watch downloaded playback from camera</a>
+      </div>
+    </div>
+  </div>
+
+    <div class="m-2 bg-opacity-10 border border-info rounded">
+      <div class="row text-center p-3">
+        <div class="col">
+          <h3>The Stream</h3>
+          <iframe id="ipcam_frame" width="645" height="485" src="http://{{camera.ip_cam_adress}}/ISAPI/Streaming/channels/102/httpPreview"></iframe>
+        </div>
+        <div class="col">
+          <h3>The Capture</h3>
+          <div id="snapshot"></div>
+        </div>
+      </div>
+    </div>
+
+  {% else %}
+    <p>You have no rights to visit this page</p>
+  {% endif %}
+
+  <script type="text/javascript" src="{% static 'js/ip_camera.js' %}"></script>
+{% endblock content %}

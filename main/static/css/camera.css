@@ -1,16 +1,22 @@
-pre {
-  overflow-x: hidden;
-  overflow-y: auto;
+.play-area {
+  border: 1px solid grey;
+  padding: 1em 1%;
+  margin-bottom: 1em;
 }
 
-video {
-  width: 100%;
+.play-area-sub {
+  width: 47%;
+  padding: 1em 1%;
+  display: inline-block;
+  text-align: center;
 }
 
-.option {
-  margin-bottom: 8px;
+#canvas {
+  display: none;
 }
 
-#media {
-  max-width: 1280px;
+#snapshot {
+  display: inline-block;
+  width: 640px;
+  height: 480px;
 }
