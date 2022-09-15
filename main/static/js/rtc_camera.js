@@ -1,12 +1,14 @@
 // The buttons to start & stop stream and to capture the image
-var btnStart = document.getElementById("btn-start");
-var btnStop = document.getElementById("btn-stop");
-var btnCapture = document.getElementById("btn-capture");
+var btnStart        = document.getElementById("btn-start");
+var btnStop         = document.getElementById("btn-stop");
+var btnCapture      = document.getElementById("btn-capture");
+var btnPredict      = document.getElementById("btn-predict");
+var checkboxPredict = document.getElementById("checkboxPredict");
 
 // The stream & capture
-var stream = document.getElementById("stream");
-var canvas = document.getElementById("canvas");
-var snapshot = document.getElementById("snapshot");
+var stream          = document.getElementById("stream");
+var canvas          = document.getElementById("canvas");
+var snapshot        = document.getElementById("snapshot");
 
 // The video stream
 var cameraStream = null;
@@ -15,10 +17,18 @@ var cameraStream = null;
 btnStart.addEventListener("click", startStreaming);
 btnStop.addEventListener("click", stopStreaming);
 btnCapture.addEventListener("click", captureSnapshot);
+checkboxPredict.addEventListener("change", btnEnabling);
+
+function btnEnabling() {
+  btnPredict.disabled = checkboxPredict.checked ? true : false;
+}
 
 // Start Streaming
 function startStreaming() {
-  var mediaSupport = "mediaDevices" in navigator;
+  btnStart.disabled   = true;
+  btnStop.disabled    = false;
+  btnCapture.disabled = false;
+  var mediaSupport    = "mediaDevices" in navigator;
 
   if (mediaSupport && null == cameraStream) {
     navigator.mediaDevices
@@ -41,6 +51,10 @@ function startStreaming() {
 
 // Stop Streaming
 function stopStreaming() {
+  btnStart.disabled   = false;
+  btnStop.disabled    = true;
+  btnCapture.disabled = true;
+
   if (null != cameraStream) {
     var track = cameraStream.getTracks()[0];
 

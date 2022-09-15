@@ -27,24 +27,22 @@ def playback(request, cam_id):
 
     if request.method == "POST":
         PlaybackVideo.objects.filter(camera_id=camera).delete()
-        os.system("cd main/media/ && \
-                rm -rf * && \
+        os.system("cd Downloads && \
                 hikload --server " + camera.ip_cam_adress + \
                 " --user " + camera.ip_cam_user + \
                 " --password " + camera.ip_cam_password + \
-                " --allrecordings --downloads video")
+                " --downloads " + str(cam_id) + \
+                " && ls -la" + str(cam_id))
+        print("HELLO")
 
-        directory = "main/media/video/"
+        directory = "Downloads/" + str(cam_id)
         for filename in os.listdir(directory):
-            os.rename(filename, str(cam_id) + "_" + filename)
-
-        for filename in os.listdir(directory):
-            if filename.endswith('.mp4'):
-                PlaybackVideo(
-                        camera_id=camera,
-                        headline=filename,
-                        video="video/" + str(camera.id) + "_"+ filename
-                    ).save()
+            print(filename)
+            PlaybackVideo(
+                    camera_id=camera,
+                    headline=filename,
+                    video=filename
+                ).save()
 
     playbacks = PlaybackVideo.objects.filter(camera_id=camera)
 
