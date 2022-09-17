@@ -2,10 +2,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.views import generic
 from django.http import HttpResponse
 from .models import Camera, PlaybackVideo
 import os
+
+import base64
+import cv2
+import numpy as np
 
 
 @method_decorator(login_required(login_url='/login/'), name='dispatch')
@@ -74,9 +80,17 @@ def image_loader(request):
     return render(request, 'ai_camera/image_loader.html')
 
 
-# @csrf_exempt
-# @require_POST
-# def predict_image(request):
-#     image = request.FILES.get('image')
-#     result = predict(image)
-#     return HttpResponse(result, content_type='image/jpeg')
+@csrf_exempt
+@require_POST
+def predict_image(request):
+    image = request.FILES.get('image')
+
+    image = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+
+    retval, buffer = cv2.imencode('.jpg', gray_image)
+    data = base64.b64encode(buffer.tobytes())
+    result = data.decode()
+
+    return HttpResponse(result, content_type='image/jpeg')
