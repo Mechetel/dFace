@@ -32,7 +32,8 @@ RUN pip3 install Django \
                  psycopg2 \
                  pydantic \
                  fontawesomefree \
-                 hikload
+                 hikload \
+                 hikvisionapi
 
 
 USER $APP_USER

@@ -6,7 +6,8 @@ from .views import (
             playback,
             playback_view,
             image_loader,
-            predict_image
+            predict_image,
+            get_picture_from_ip
         )
 
 
@@ -18,4 +19,5 @@ urlpatterns = [
     path('webrtc_camera/', rtc_stream, name='webrtc_camera'),
     path('image_loader/', image_loader, name='image_loader'),
     path('predict/', predict_image, name='predict_image'),
+    path('get_picture_from_ip/', get_picture_from_ip, name='get_picture_from_ip'),
 ]

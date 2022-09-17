@@ -15,8 +15,8 @@
   display: none;
 }
 
-#snapshot {
+#snapshotDiv {
   display: inline-block;
-  width: 640px;
-  height: 480px;
+  width: 645px;
+  height: 485px;
 }

@@ -3,15 +3,16 @@ from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.views import generic
 from django.http import HttpResponse
 from .models import Camera, PlaybackVideo
-import os
+from hikvisionapi import Client
 
+import numpy as np
 import base64
 import cv2
-import numpy as np
+import os
 
 
 @method_decorator(login_required(login_url='/login/'), name='dispatch')
@@ -79,6 +80,21 @@ def rtc_stream(request):
 def image_loader(request):
     return render(request, 'ai_camera/image_loader.html')
 
+@csrf_exempt
+@require_POST
+def get_picture_from_ip(request):
+    ip_cam_adress   = request.POST.get('ip_cam_adress')
+    ip_cam_user     = request.POST.get('ip_cam_user')
+    ip_cam_password = request.POST.get('ip_cam_password')
+    cam             = Client('http://' + ip_cam_adress, ip_cam_user, ip_cam_password)
+    image           = cam.Streaming.channels[102].picture(method='get', type='opaque_data')
+    image = cv2.imdecode(np.fromstring(image.content, np.uint8), cv2.IMREAD_UNCHANGED)
+
+    retval, buffer = cv2.imencode('.jpg', image)
+    data = base64.b64encode(buffer.tobytes())
+    result = data.decode()
+
+    return HttpResponse(result, content_type='image/jpeg')
 
 @csrf_exempt
 @require_POST

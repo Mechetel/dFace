@@ -1,21 +1,16 @@
 import { fetch_snapshot } from "./fetch_snap.js";
 
-var btnCapture = document.getElementById("btn-capture");
+
 var snapshot = document.getElementById("snapshot");
-
-function captureSnapshot(ip_cam_adress) {
+window.captureSnapshot = function captureSnapshot(ip_cam_adress, ip_cam_user, ip_cam_password) {
   var img = new Image();
-
-  img.src =
-    "http://" +
-    ip_cam_adress +
-    "/ISAPI/Streaming/channels/102/picture?t=" +
-    new Date().getTime();
   img.width = 640;
   img.height = 480;
 
-  snapshot.innerHTML = "";
-  snapshot.appendChild(img);
+  var formData = new FormData();
+  formData.append("ip_cam_adress",   ip_cam_adress);
+  formData.append("ip_cam_user",     ip_cam_user);
+  formData.append("ip_cam_password", ip_cam_password);
 
-  fetch_snapshot(img, snapshot);
-}
+  fetch_snapshot(img, snapshot, formData, "../../get_picture_from_ip/");
+};

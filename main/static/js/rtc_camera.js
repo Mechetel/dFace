@@ -1,5 +1,6 @@
 import { fetch_snapshot } from "./fetch_snap.js";
 
+
 // The buttons to start & stop stream and to capture the image
 var btnStart = document.getElementById("btn-start");
 var btnStop = document.getElementById("btn-stop");
@@ -89,7 +90,16 @@ function captureSnapshot() {
     snapshot.appendChild(img);
 
     if (checkboxPredict.checked) {
-      fetch_snapshot(img, snapshot);
+      fetch(img.src, {
+        mode: "no-cors",
+      })
+        .then((res) => res.blob())
+        .then((blob) => {
+          const file = new File([blob], "capture.jpeg");
+          var formData = new FormData();
+          formData.append("image", file);
+          fetch_snapshot(img, snapshot, formData, "../predict/");
+        });
+      }
     }
   }
-}
