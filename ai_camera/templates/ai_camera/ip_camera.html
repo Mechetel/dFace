@@ -22,7 +22,10 @@
         <h3>{{camera.name}}</h3><p>User: {{camera.ip_cam_user}}, Password: {{camera.ip_cam_password}}</p>
       </div>
       <div class="col align-self-center">
-        <button class="btn btn-warning" id="btn-capture" type="button" onclick="captureSnapshot('{{camera.ip_cam_adress}}', '{{camera.ip_cam_user}}', '{{camera.ip_cam_password}}')"><i class="fa-solid fa-camera-retro"></i> Capture Image</button>
+        <button class="btn btn-warning" id="btn-capture" type="button" onclick="captureSnapshot('{{camera.ip_cam_adress}}', '{{camera.ip_cam_user}}', '{{camera.ip_cam_password}}')">
+          <i class="fa-solid fa-camera-retro"></i> Capture Image
+        </button>
+        <button id="btn-predict" type="button" class="btn btn-primary" disabled>Predict Image</button>
       </div>
       <div class="col align-self-center">
         <a href="{% url 'playback' camera.pk %}" class="btn btn-info"><i class="fa-solid fa-film"></i> Watch downloaded playback from camera</a>

@@ -22,3 +22,18 @@ export function fetch_snapshot(img, snapshot, formData, _url) {
     },
   });
 }
+
+
+export function predictImage(img, snapshot, path_to_fetch) {
+  fetch(img.src, {
+    mode: "no-cors",
+  })
+    .then((res) => res.blob())
+    .then((blob) => {
+      const file = new File([blob], "capture.jpeg");
+      var formData = new FormData();
+      formData.append("image", file);
+      fetch_snapshot(img, snapshot, formData, path_to_fetch);
+    });
+}
+

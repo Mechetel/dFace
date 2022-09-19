@@ -1,12 +1,12 @@
-import { fetch_snapshot } from "./fetch_snap.js";
+import { predictImage } from "./fetch_snap.js";
 
+var img = new Image();
 
 // The buttons to start & stop stream and to capture the image
 var btnStart = document.getElementById("btn-start");
 var btnStop = document.getElementById("btn-stop");
 var btnCapture = document.getElementById("btn-capture");
 var btnPredict = document.getElementById("btn-predict");
-var checkboxPredict = document.getElementById("checkboxPredict");
 
 // The stream & capture
 var stream = document.getElementById("stream");
@@ -20,22 +20,13 @@ var cameraStream = null;
 btnStart.addEventListener("click", startStreaming);
 btnStop.addEventListener("click", stopStreaming);
 btnCapture.addEventListener("click", captureSnapshot);
-checkboxPredict.addEventListener("change", btnEnabling);
-
-function btnEnabling() {
-  if (!btnStop.disabled || !btnCapture.disabled) {
-    btnPredict.disabled = checkboxPredict.checked ? true : false;
-  } else {
-    btnPredict.disabled = true;
-  }
-}
+btnPredict.addEventListener("click", function(){predictImage(img, snapshot, "../predict/"); btnPredict.disabled = true;});
 
 // Start Streaming
 function startStreaming() {
   btnStart.disabled = true;
   btnStop.disabled = false;
   btnCapture.disabled = false;
-  btnEnabling();
 
   var mediaSupport = "mediaDevices" in navigator;
 
@@ -76,11 +67,11 @@ function stopStreaming() {
 }
 
 function captureSnapshot() {
+  btnPredict.disabled = false;
   if (null != cameraStream) {
     canvas
       .getContext("2d")
       .drawImage(stream, 0, 0, stream.width, stream.height);
-    var img = new Image();
 
     img.src = canvas.toDataURL("image/jpeg");
     img.width = stream.width;
@@ -88,18 +79,5 @@ function captureSnapshot() {
 
     snapshot.innerHTML = "";
     snapshot.appendChild(img);
-
-    if (checkboxPredict.checked) {
-      fetch(img.src, {
-        mode: "no-cors",
-      })
-        .then((res) => res.blob())
-        .then((blob) => {
-          const file = new File([blob], "capture.jpeg");
-          var formData = new FormData();
-          formData.append("image", file);
-          fetch_snapshot(img, snapshot, formData, "../predict/");
-        });
-      }
-    }
   }
+}
