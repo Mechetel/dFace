@@ -18,6 +18,6 @@ urlpatterns = [
     path('camera/<int:cam_id>/playback/<int:play_id>/', playback_view, name='playback_view'),
     path('webrtc_camera/', rtc_stream, name='webrtc_camera'),
     path('image_loader/', image_loader, name='image_loader'),
-    path('predict/', predict_image, name='predict_image'),
-    path('get_picture_from_ip/', get_picture_from_ip, name='get_picture_from_ip'),
+    path('predict/', predict_image),
+    path('get_picture_from_ip/', get_picture_from_ip),
 ]
