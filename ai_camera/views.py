@@ -8,6 +8,7 @@ from django.views import generic
 from django.http import HttpResponse
 from .models import Camera, PlaybackVideo
 from hikvisionapi import Client
+from .utils import predict
 
 import numpy as np
 import base64
@@ -102,10 +103,9 @@ def predict_image(request):
     image = request.FILES.get('image')
 
     image = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    image = predict(image)
 
-
-    retval, buffer = cv2.imencode('.jpg', gray_image)
+    retval, buffer = cv2.imencode('.jpg', image)
     data = base64.b64encode(buffer.tobytes())
     result = data.decode()
 

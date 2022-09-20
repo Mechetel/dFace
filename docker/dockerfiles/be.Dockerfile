@@ -23,9 +23,11 @@ RUN (apt-get autoremove -y; apt-get autoclean -y)
 RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip3 install Django \
                  django-environ \
-                 # keras \
-                 # numpy \
-                 # facenet-pytorch \
+                 keras \
+                 numpy \
+                 torch \
+                 facenet-pytorch \
+                 tensorflow \
                  neovim \
                  opencv-python \
                  pynvim \
