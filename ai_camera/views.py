@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 from django.views import generic
 from django.http import HttpResponse
-from .models import Camera, PlaybackVideo
+from .models import Camera, PlaybackVideo, Person
 from hikvisionapi import Client
 from .utils import predict
 
@@ -35,13 +35,12 @@ def playback(request, cam_id):
 
     if request.method == "POST":
         PlaybackVideo.objects.filter(camera_id=camera).delete()
-        os.system("cd Downloads && \
+        os.system("rm -r Downloads && mkdir Downloads && cd Downloads && \
                 hikload --server " + camera.ip_cam_adress + \
-                " --user " + camera.ip_cam_user + \
-                " --password " + camera.ip_cam_password + \
-                " --downloads " + str(cam_id) + \
-                " && ls -la" + str(cam_id))
-        print("HELLO")
+                " --user "         + camera.ip_cam_user + \
+                " --password "     + camera.ip_cam_password + \
+                " --downloads "    + str(cam_id) + \
+                " && ls -la"       + str(cam_id))
 
         directory = "Downloads/" + str(cam_id)
         for filename in os.listdir(directory):
@@ -81,6 +80,25 @@ def rtc_stream(request):
 def image_loader(request):
     return render(request, 'ai_camera/image_loader.html')
 
+
+@csrf_exempt
+@require_POST
+def load_flw_dataset(request):
+    lfw_dataset = "lfw-dataset"
+    for dirname in os.listdir(lfw_dataset):
+        if os.path.isdir(dirname):
+            print(os.path.join(lfw_dataset, dirname))
+            # for filename in os.listdir(dirname):
+            #     if filename.endswith("0001.jpg"):
+            #         print(os.path.join(lfw_dataset, dirname, filename))
+
+                    # Person(
+                    #         name=os.path.join(lfw_dataset, dirname, filename),
+                    #         image=filename
+                    #     ).save()
+
+    return HttpResponse(request)
+
 @csrf_exempt
 @require_POST
 def get_picture_from_ip(request):
@@ -101,7 +119,6 @@ def get_picture_from_ip(request):
 @require_POST
 def predict_image(request):
     image = request.FILES.get('image')
-
     image = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     image = predict(image)
 

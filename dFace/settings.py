@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import environ
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 env = environ.Env()
 environ.Env.read_env()

@@ -3,15 +3,15 @@ import { predictImage } from "./fetch_snap.js";
 var img = new Image();
 
 // The buttons to start & stop stream and to capture the image
-var btnStart = document.getElementById("btn-start");
-var btnStop = document.getElementById("btn-stop");
+var btnStart   = document.getElementById("btn-start");
+var btnStop    = document.getElementById("btn-stop");
 var btnCapture = document.getElementById("btn-capture");
 var btnPredict = document.getElementById("btn-predict");
 
 // The stream & capture
-var stream = document.getElementById("stream");
-var canvas = document.getElementById("canvas");
-var snapshot = document.getElementById("snapshot");
+var stream     = document.getElementById("stream");
+var canvas     = document.getElementById("canvas");
+var snapshot   = document.getElementById("snapshot");
 
 // The video stream
 var cameraStream = null;
@@ -51,8 +51,8 @@ function startStreaming() {
 
 // Stop Streaming
 function stopStreaming() {
-  btnStart.disabled = false;
-  btnStop.disabled = true;
+  btnStart.disabled   = false;
+  btnStop.disabled    = true;
   btnCapture.disabled = true;
   btnPredict.disabled = true;
 
@@ -73,8 +73,8 @@ function captureSnapshot() {
       .getContext("2d")
       .drawImage(stream, 0, 0, stream.width, stream.height);
 
-    img.src = canvas.toDataURL("image/jpeg");
-    img.width = stream.width;
+    img.src    = canvas.toDataURL("image/jpeg");
+    img.width  = stream.width;
     img.height = stream.height;
 
     snapshot.innerHTML = "";

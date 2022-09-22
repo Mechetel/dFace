@@ -16,7 +16,10 @@
           <a href="{% url 'webrtc_camera' %}" class="btn btn-primary"><i class="fa-solid fa-camera"></i> Watch on client camera with WebRTC</a>
         </div>
         <div class="col">
-          <a href="{% url 'image_loader' %}"class="btn btn-primary"><i class="fa-solid fa-download"></i> Upload image for next process</a>
+          <a href="{% url 'image_loader' %}" class="btn btn-primary"><i class="fa-solid fa-download"></i> Upload image for next process</a>
+        </div>
+        <div class="col">
+          <button class="btn btn-danger" id="lfw_to_db" type="submit">Load LFW dataset to database</button>
         </div>
       </div>
     </div>
@@ -54,4 +57,7 @@
   {% else %}
     <p>You have no rights to visit this page</p>
   {% endif %}
+
+
+  <script type="module" src="{% static 'js/lfw_to_db.js' %}"></script>
 {% endblock content %}

@@ -21,7 +21,7 @@ WORKDIR /app
 RUN (apt-get autoremove -y; apt-get autoclean -y)
 
 RUN /usr/local/bin/python -m pip install --upgrade pip
-RUN pip3 install Django \
+RUN pip3 install --upgrade Django \
                  django-environ \
                  keras \
                  numpy \
@@ -29,6 +29,7 @@ RUN pip3 install Django \
                  facenet-pytorch \
                  tensorflow \
                  neovim \
+                 django-ndarrayfield \
                  opencv-python \
                  pynvim \
                  psycopg2 \
