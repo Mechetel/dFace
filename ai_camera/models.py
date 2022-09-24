@@ -57,9 +57,9 @@ class Person(models.Model):
         image = np.array(image, dtype='float32') / 255
 
 
-        print("--------------")
-        print(np.shape(image))  # (96, 96, 3)
-        print("--------------")
+        # print("--------------")
+        # print(np.shape(image))  # (96, 96, 3)
+        # print("--------------")
 
 
         predicted_image_data = lfw_trained_model.predict(image) # error

@@ -20,15 +20,15 @@ def predict_face(prob, face_data, cnn_model):
     face_data = np.array(face_data, dtype='float32') / 255
 
 
-    print("--------------")
-    print(np.shape(face_data))  # (96, 96, 3)
-    print("--------------")
+    # print("--------------")
+    # print(np.shape(face_data))  # (96, 96, 3)
+    # print("--------------")
 
 
-    predicted_face_data = cnn_model.predict(face_data) #error
+    # predicted_face_data = cnn_model.predict(face_data) #error
     ## ValueError: Input 0 of layer "model_8" is incompatible with the layer: expected shape=(None, 96, 96, 3), found shape=(32, 96, 3)
 
-    return predicted_face_data
+    # return predicted_face_data
 
 
 def predict(image):
