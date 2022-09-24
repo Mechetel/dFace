@@ -13,11 +13,21 @@ input_shape = (96, 96, 3) # height, width, channels
 (openface_model, lfw_trained_model, pinface_trained_model) = create_models()
 
 
-def predict_face(face_data, cnn_model):
+def predict_face(prob, face_data, cnn_model):
     face_data = cv2.cvtColor(face_data, cv2.COLOR_BGR2RGB)
     face_data = cv2.resize(face_data, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
-    face_data = np.array(face_data, dtype='float32') / 255.0
-    predicted_face_data = lfw_trained_model.predict(face_data)
+    # cv2.imwrite(prob + "file.jpg", face_data)  # all right
+    face_data = np.array(face_data, dtype='float32') / 255
+
+
+    print("--------------")
+    print(np.shape(face_data))  # (96, 96, 3)
+    print("--------------")
+
+
+    predicted_face_data = cnn_model.predict(face_data) #error
+    ## ValueError: Input 0 of layer "model_8" is incompatible with the layer: expected shape=(None, 96, 96, 3), found shape=(32, 96, 3)
+
     return predicted_face_data
 
 
@@ -30,13 +40,12 @@ def predict(image):
 
 
                 face_data = image[y1:y2, x1:x2]
-                predicted_face = predict_face(face_data, lfw_trained_model)
-
+                predicted_face = predict_face(str(prob), face_data, lfw_trained_model)
 
 
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), 2)
                 cv2.putText(image, str(prob), (x1, y2+20),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
     return image
 

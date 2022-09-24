@@ -50,14 +50,20 @@ class Person(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        image = cv2.cvtColor(np.asarray(Image.open(self.image)), cv2.COLOR_BGR2RGB)
+        image = np.asarray(Image.open(self.image)) # already RGB, so no need cv2.cvtColor
+        # image = cv2.cvtColor(cv2.imread(self.image.url), cv2.COLOR_BGR2RGB)
         image = cv2.resize(image, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
-        image = np.array(image, dtype='float32') / 255.0
+        # cv2.imwrite("file.jpg", image)  # all right
+        image = np.array(image, dtype='float32') / 255
+
 
         print("--------------")
-        print(np.shape(image))
+        print(np.shape(image))  # (96, 96, 3)
         print("--------------")
-        predicted_image_data = lfw_trained_model.predict(image)
+
+
+        predicted_image_data = lfw_trained_model.predict(image) # error
+        ## ValueError: Input 0 of layer "model_3" is incompatible with the layer: expected shape=(None, 96, 96, 3), found shape=(32, 96, 3)
 
         self.image_nd_array.save(predicted_image_data, save=False)
         super().save(*args, **kwargs)
