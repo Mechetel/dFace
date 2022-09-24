@@ -4,6 +4,7 @@ from ndarraydjango.fields import NDArrayField
 from facenet_pytorch import MTCNN
 from .cnn_model import create_models
 from django.db import models
+from PIL import Image
 import numpy as np
 import torch
 import cv2
@@ -48,19 +49,15 @@ class Person(models.Model):
     def __str__(self):
         return self.name
 
-@receiver(signals.post_save, sender=Person)
-def create_person(sender, instance, created, **kwargs):
-    image = cv2.imread(instance.image.url)
-    print(image)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    print(np.shape(image))
-    faces, _ = mtcnn.detect(image)
+    def save(self, *args, **kwargs):
+        image = cv2.cvtColor(np.asarray(Image.open(self.image)), cv2.COLOR_BGR2RGB)
+        image = cv2.resize(image, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
+        image = np.array(image, dtype='float32') / 255.0
 
-    for face in faces:
-        x1, y1, x2, y2 = [int(p) for p in face]
-        face_data = image[y1:y2, x1:x2]
-        face_data = cv2.resize(face_data, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
-        face_data = np.array(face_data, dtype='float32') / 255.0
-        predicted_image_data = lfw_trained_model.predict(face_data)
+        print("--------------")
+        print(np.shape(image))
+        print("--------------")
+        predicted_image_data = lfw_trained_model.predict(image)
 
-    instance.image_nd_array = predicted_image_data
+        self.image_nd_array.save(predicted_image_data, save=False)
+        super().save(*args, **kwargs)

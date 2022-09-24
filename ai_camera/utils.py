@@ -13,6 +13,14 @@ input_shape = (96, 96, 3) # height, width, channels
 (openface_model, lfw_trained_model, pinface_trained_model) = create_models()
 
 
+def predict_face(face_data, cnn_model):
+    face_data = cv2.cvtColor(face_data, cv2.COLOR_BGR2RGB)
+    face_data = cv2.resize(face_data, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
+    face_data = np.array(face_data, dtype='float32') / 255.0
+    predicted_face_data = lfw_trained_model.predict(face_data)
+    return predicted_face_data
+
+
 def predict(image):
     faces, probs = mtcnn.detect(image)
     if faces is not None:
@@ -21,15 +29,8 @@ def predict(image):
                 x1, y1, x2, y2 = [int(p) for p in face]
 
 
-
-
                 face_data = image[y1:y2, x1:x2]
-                face_data = cv2.cvtColor(face_data, cv2.COLOR_BGR2RGB)
-                face_data = cv2.resize(face_data, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
-                face_data = np.array(face_data, dtype='float32') / 255.0
-
-
-
+                predicted_face = predict_face(face_data, lfw_trained_model)
 
 
 
