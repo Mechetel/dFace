@@ -1,5 +1,5 @@
 # Created by https://www.gitignore.io
-lfw-dataset
+datasets
 main/media/*
 ### OSX ###
 .DS_Store
