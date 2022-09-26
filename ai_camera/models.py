@@ -35,7 +35,7 @@ class Person(models.Model):
         ("student", "student"),
     ]
     career = models.TextField(max_length=15, null=True, choices=PERSON_CHOISES)
-    image  = models.FileField(upload_to ='images/', null=False)
+    image  = models.FileField(upload_to ='images/', null=True)
     image_nd_array = NDArrayField(shape=(96, 96, 3), dtype=np.float32, null=True)
 
     def __str__(self):
@@ -46,9 +46,9 @@ class Person(models.Model):
     #     # image = cv2.cvtColor(cv2.imread(self.image.url), cv2.COLOR_BGR2RGB)
     #     image = cv2.resize(image, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
     #     image = np.array(image, dtype='float32') / 255
+    #     image = np.expand_dims(image, axis=0)
 
-    #     predicted_image_data = lfw_trained_model.predict(image) # error
-    #     ## ValueError: Input 0 of layer "model_3" is incompatible with the layer: expected shape=(None, 96, 96, 3), found shape=(32, 96, 3)
+    #     predicted_image_data = lfw_trained_model.predict(image)
 
     #     self.image_nd_array.save(predicted_image_data, save=False)
     #     super().save(*args, **kwargs)

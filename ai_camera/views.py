@@ -93,13 +93,10 @@ def load_pin_dataset(request):
         for filename in os.listdir(f'{dataset_dir}/{directory}'):
             if filename.endswith(".jpg"):
                 path = f'{dataset_dir}/{directory}/{filename}'
-                # with open('path_to_file', 'rb') as f:
-                #     data = File(f)
-                #     model.image.save('filename', data, True)
-                Person(
-                        name=person_name,
-                        image=path
-                    ).save()
+                person = Person(name=person_name)
+                with open(path, 'rb') as f:
+                    data = File(f)
+                    person.image.save(filename, data, True)
 
     return HttpResponse(request)
 
