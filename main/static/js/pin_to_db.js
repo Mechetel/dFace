@@ -1,10 +1,10 @@
-var btnLfw = document.getElementById("lfw_to_db");
+var btnLfw = document.getElementById("pin_to_db");
 btnLfw.addEventListener("click", lfw_download);
 
 function lfw_download() {
   $.ajax({
     type: "POST",
-    url: "load_flw_dataset/",
+    url: "load_pin_dataset/",
     mode: "no-cors",
     processData: false,
     contentType: false,

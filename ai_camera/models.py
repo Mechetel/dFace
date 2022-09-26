@@ -1,20 +1,12 @@
 from django.db.models import signals
 from django.dispatch import receiver
-from ndarraydjango.fields import NDArrayField
-from facenet_pytorch import MTCNN
-from .cnn_model import create_models
+from .constants import input_shape, lfw_trained_model, mtcnn
 from django.db import models
+from ndarraydjango.fields import NDArrayField
 from PIL import Image
 import numpy as np
-import torch
 import cv2
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-mtcnn = MTCNN(keep_all=True, device=device)
-input_shape = (96, 96, 3) # height, width, channels
-(_, lfw_trained_model, _) = create_models()
 
 
 class Camera(models.Model):

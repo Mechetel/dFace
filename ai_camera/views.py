@@ -83,19 +83,18 @@ def image_loader(request):
 
 @csrf_exempt
 @require_POST
-def load_flw_dataset(request):
-    lfw_dataset = "lfw-dataset"
-    for dirname in os.listdir(lfw_dataset):
-        if os.path.isdir(dirname):
-            print(os.path.join(lfw_dataset, dirname))
-            # for filename in os.listdir(dirname):
-            #     if filename.endswith("0001.jpg"):
-            #         print(os.path.join(lfw_dataset, dirname, filename))
-
-                    # Person(
-                    #         name=os.path.join(lfw_dataset, dirname, filename),
-                    #         image=filename
-                    #     ).save()
+def load_pin_dataset(request):
+    dataset_dir = f'datasets/pin_faces'
+    for directory in os.listdir(dataset_dir):
+        if not os.path.isdir(f'{dataset_dir}/{directory}'):
+            continue
+        person_name = directory
+        for filename in os.listdir(f'{dataset_dir}/{directory}'):
+            path = f'{dataset_dir}/{directory}/{filename}'
+            Person(
+                    name=person_name,
+                    image=path
+                ).save()
 
     return HttpResponse(request)
 

@@ -8,7 +8,7 @@ from .views import (
             image_loader,
             predict_image,
             get_picture_from_ip,
-            load_flw_dataset
+            load_pin_dataset
         )
 
 
@@ -22,5 +22,5 @@ urlpatterns = [
 
     path('predict/', predict_image),
     path('get_picture_from_ip/', get_picture_from_ip),
-    path('load_flw_dataset/', load_flw_dataset),
+    path('load_pin_dataset/', load_pin_dataset),
 ]
