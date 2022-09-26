@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 from django.views import generic
+from django.core.files import File
 from django.http import HttpResponse
 from .models import Camera, PlaybackVideo, Person
 from hikvisionapi import Client
@@ -90,11 +91,15 @@ def load_pin_dataset(request):
             continue
         person_name = directory
         for filename in os.listdir(f'{dataset_dir}/{directory}'):
-            path = f'{dataset_dir}/{directory}/{filename}'
-            Person(
-                    name=person_name,
-                    image=path
-                ).save()
+            if filename.endswith(".jpg"):
+                path = f'{dataset_dir}/{directory}/{filename}'
+                # with open('path_to_file', 'rb') as f:
+                #     data = File(f)
+                #     model.image.save('filename', data, True)
+                Person(
+                        name=person_name,
+                        image=path
+                    ).save()
 
     return HttpResponse(request)
 

@@ -8,9 +8,8 @@ def recognize_face(prob, face_data, cnn_model):
     face_data = cv2.cvtColor(face_data, cv2.COLOR_BGR2RGB)
     face_data = cv2.resize(face_data, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
     face_data = np.array(face_data, dtype='float32') / 255
-
-    predicted_face_data = cnn_model.predict(face_data) #error
-    ## ValueError: Input 0 of layer "model_8" is incompatible with the layer: expected shape=(None, 96, 96, 3), found shape=(32, 96, 3)
+    face_data = np.expand_dims(face_data, axis=0)
+    predicted_face_data = cnn_model.predict(face_data)
 
     return predicted_face_data
 
@@ -36,7 +35,7 @@ def recognize(image):
                 xx1, yy1, xx2, yy2 = [int(p) for p in face]
                 half_width         = int((xx2 - xx1) / 2.8)
                 half_height        = int((yy2 - yy1) / 2.8)
-                (xx1, yy1)         = [c - half_width for c in (xx1, yy1)]
+                (xx1, yy1)         = [c - half_width  for c in (xx1, yy1)]
                 (xx2, yy2)         = [c + half_height for c in (xx2, yy2)]
                 if xx1 < 0 or yy1 < 0 or xx2 > image_widht or yy2 > image_height:
                     #can't be recognized
@@ -44,7 +43,7 @@ def recognize(image):
                 else:
                     #have enough space to be recognized
                     face_data = image[yy1:yy2, xx1:xx2]
-                    # predicted_face = recognize_face(str(prob), face_data, lfw_trained_model)
+                    predicted_face = recognize_face(str(prob), face_data, lfw_trained_model)
 
                     cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
                     cv2.rectangle(image, (xx1, yy1), (xx2, yy2), (0, 255, 0), thickness)
