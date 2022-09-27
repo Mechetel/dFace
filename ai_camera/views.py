@@ -93,10 +93,16 @@ def load_pin_dataset(request):
         for filename in os.listdir(f'{dataset_dir}/{directory}'):
             if filename.endswith(".jpg"):
                 path = f'{dataset_dir}/{directory}/{filename}'
-                person = Person(name=person_name)
-                with open(path, 'rb') as f:
-                    data = File(f)
-                    person.image.save(filename, data, True)
+                try:
+                    person_exist = Person.objects.get(name = person_name)
+                except Person.DoesNotExist:
+                    person_exist = None
+
+                if not person_exist:
+                    person = Person(name=person_name.title())
+                    with open(path, 'rb') as f:
+                        data = File(f)
+                        person.image.save(filename, data, True)
 
     return HttpResponse(request)
 
@@ -121,6 +127,7 @@ def get_picture_from_ip(request):
 def predict_image(request):
     image = request.FILES.get('image')
     image = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+    persons = Person.objects.all()
     image = recognize(image)
 
     retval, buffer = cv2.imencode('.jpg', image)
