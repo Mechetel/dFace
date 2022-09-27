@@ -36,7 +36,8 @@ RUN pip3 install --upgrade Django \
                  pydantic \
                  fontawesomefree \
                  hikload \
-                 hikvisionapi
+                 hikvisionapi\
+                 mtcnn
 
 
 USER $APP_USER

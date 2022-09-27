@@ -1,6 +1,6 @@
 from django.db.models import signals
 from django.dispatch import receiver
-from .constants import input_shape, lfw_trained_model, mtcnn
+from .constants import input_shape, lfw_trained_model
 from django.db import models
 from ndarraydjango.fields import NDArrayField
 from PIL import Image

@@ -1,7 +1,27 @@
-from .constants import input_shape, lfw_trained_model, mtcnn
+from .constants import input_shape, lfw_trained_model
 import numpy as np
+from mtcnn import MTCNN
 import cv2
 import os
+
+def detect(image):
+    detector = MTCNN()
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    results = detector.detect_faces(image)
+    for result in results:
+        bounding_box = result['box']
+        keypoints = result['keypoints']
+        cv2.rectangle(image,
+                (bounding_box[0], bounding_box[1]),
+               (bounding_box[0]+bounding_box[2], bounding_box[1] + bounding_box[3]),
+                (0,155,255), 2)
+        cv2.circle(image,(keypoints['left_eye']), 2, (0,155,255), 2)
+        cv2.circle(image,(keypoints['right_eye']), 2, (0,155,255), 2)
+        cv2.circle(image,(keypoints['nose']), 2, (0,155,255), 2)
+        cv2.circle(image,(keypoints['mouth_left']), 2, (0,155,255), 2)
+        cv2.circle(image,(keypoints['mouth_right']), 2, (0,155,255), 2)
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    return image
 
 
 def recognize_face(prob, face_data, cnn_model):
@@ -15,10 +35,10 @@ def recognize_face(prob, face_data, cnn_model):
 
 
 def recognize(image):
-    faces, probs = mtcnn.detect(image)
+    faces, probs = mtcnn.detect_faces(image)
     if faces is not None:
         for face, prob in zip(faces, probs):
-            if prob > 0.9:
+            if prob > 0.1:
                 x1, y1, x2, y2 = [int(p) for p in face]
                 (image_height, image_widht, _) = np.shape(image)
 
@@ -51,3 +71,4 @@ def recognize(image):
                                 cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), thickness)
 
     return image
+

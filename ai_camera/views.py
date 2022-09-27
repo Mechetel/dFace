@@ -9,7 +9,7 @@ from django.core.files import File
 from django.http import HttpResponse
 from .models import Camera, PlaybackVideo, Person
 from hikvisionapi import Client
-from .utils import recognize
+from .utils import detect, recognize
 
 import numpy as np
 import base64
@@ -121,7 +121,8 @@ def get_picture_from_ip(request):
 def predict_image(request):
     image = request.FILES.get('image')
     image = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
-    image = recognize(image)
+    #image = recognize(image)
+    image = detect(image) 
 
     retval, buffer = cv2.imencode('.jpg', image)
     data = base64.b64encode(buffer.tobytes())
