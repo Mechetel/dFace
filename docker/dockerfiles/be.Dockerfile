@@ -25,8 +25,6 @@ RUN pip3 install --upgrade Django \
                  django-environ \
                  keras \
                  numpy \
-                 torch \
-                 facenet-pytorch \
                  tensorflow \
                  neovim \
                  django-ndarrayfield \
@@ -36,7 +34,8 @@ RUN pip3 install --upgrade Django \
                  pydantic \
                  fontawesomefree \
                  hikload \
-                 hikvisionapi
+                 hikvisionapi \
+                 mtcnn
 
 
 USER $APP_USER
