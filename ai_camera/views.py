@@ -128,7 +128,7 @@ def predict_image(request):
     image = request.FILES.get('image')
     image = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     persons = Person.objects.all()
-    image = recognize(image)
+    image = recognize(image, persons)
 
     retval, buffer = cv2.imencode('.jpg', image)
     data = base64.b64encode(buffer.tobytes())

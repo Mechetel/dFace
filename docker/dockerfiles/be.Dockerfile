@@ -35,7 +35,8 @@ RUN pip3 install --upgrade Django \
                  fontawesomefree \
                  hikload \
                  hikvisionapi \
-                 mtcnn
+                 mtcnn \
+                 Pillow
 
 
 USER $APP_USER

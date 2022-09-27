@@ -36,17 +36,28 @@ class Person(models.Model):
     ]
     career = models.TextField(max_length=15, null=True, choices=PERSON_CHOISES)
     image  = models.FileField(upload_to ='images/', null=True)
-    image_nd_array = NDArrayField(shape=(96, 96, 3), dtype=np.float32, null=True)
+    image_nd_array = NDArrayField(shape=(128), dtype=np.float32, null=True)
 
     def __str__(self):
         return self.name
 
-@receiver(signals.post_save, sender=Person)
-def create_person(sender, instance, **kwargs):
-    image = np.asarray(Image.open(instance.image))
-    image = cv2.resize(image, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
-    image = np.array(image, dtype='float32') / 255
-    image = np.expand_dims(image, axis=0)
+# @receiver(signals.post_save, sender=Person)
+# def create_person(sender, instance, **kwargs):
+#     image = np.asarray(Image.open(instance.image))
+#     image = cv2.resize(image, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
+#     image = np.array(image, dtype='float32') / 255
+#     image = np.expand_dims(image, axis=0)
 
-    predicted_image_data = lfw_trained_model.predict(image)
-    instance.image_nd_array = predicted_image_data
+#     instance.image_nd_array = lfw_trained_model.predict(image)
+#     instance.save()
+
+
+
+    def save(self, *args, **kwargs):
+        image = np.asarray(Image.open(self.image)) # already RGB, so no need cv2.cvtColor
+        image = cv2.resize(image, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
+        image = np.array(image, dtype='float32') / 255
+        image = np.expand_dims(image, axis=0)
+
+        self.image_nd_array = lfw_trained_model.predict(image)
+        super(Person, self).save(*args, **kwargs)
