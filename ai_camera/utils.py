@@ -78,13 +78,15 @@ def recognize(image, persons):
         else:
             #have enough space to be recognized
             face_data = image[yy1:yy2, xx1:xx2]
-            comparison = compare(lfw_trained_model, face_data, persons_array)[-1]
+            comparison = compare(lfw_trained_model, face_data, persons_array)[0]
             print(comparison['distance'])
             positive = comparison['distance'] < 0.4
-            if positive:
-                person = comparison['person_name']
-            else:
-                person = "unknown"
+            # if positive:
+            #     person = comparison['person_name']
+            # else:
+            #     person = "unknown"
+
+            person = comparison['person_name']
 
             cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
             draw_keypoints(image, keypoints)
