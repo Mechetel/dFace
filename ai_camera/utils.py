@@ -53,11 +53,15 @@ def recognize(image, persons):
             'person_image_nd_array': person.image_nd_array
             })
 
+    (image_height, image_widht, _) = np.shape(image)
+
+    #scaling for better image experience
+    (font_scale, thickness, padding) = scaling_image(image_height, image_widht)
+
     for face in face_list:
         box        = face["box"]
         confidence = face["confidence"]
         keypoints  = face["keypoints"]
-        (image_height, image_widht, _) = np.shape(image)
 
         x1,y1, face_widht, face_height = box
         (x2,y2) = (x1 + face_widht, y1 + face_height)
@@ -68,9 +72,6 @@ def recognize(image, persons):
         (xx1, yy1)           = [c - half_width  for c in (xx1, yy1)]
         (xx2, yy2)           = [c + half_height for c in (xx2, yy2)]
 
-        #scaling for better image experience
-        (font_scale, thickness, padding) = scaling_image(image_height, image_widht)
-
         if xx1 < 0 or yy1 < 0 or xx2 > image_widht or yy2 > image_height:
             #can't be recognized
             cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
@@ -80,7 +81,7 @@ def recognize(image, persons):
             face_data = image[yy1:yy2, xx1:xx2]
             comparison = compare(lfw_trained_model, face_data, persons_array)[0]
             print('min distance: ' + str(comparison['distance']))
-            positive = comparison['distance'] < 0.4
+            positive = comparison['distance'] < 1
 
             if positive:
                 person = comparison['person_name']
