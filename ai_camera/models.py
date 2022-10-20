@@ -1,9 +1,15 @@
-from django.db.models import signals
-from django.dispatch import receiver
-from .constants import input_shape, lfw_trained_model, mtcnn
+from .constants import (
+        lfw_trained_model,
+        openface_model,
+        pinface_trained_model,
+        mtcnn,
+        input_shape
+    )
 from django.db import models
 from ndarraydjango.fields import NDArrayField
-from PIL import Image
+from PIL import Image as PIL_Image
+from .Image import Image
+from .Shape import Shape
 import numpy as np
 import cv2
 import os
@@ -34,30 +40,21 @@ class Person(models.Model):
         ("staff", "staff"),
         ("student", "student"),
     ]
-    career = models.TextField(max_length=15, null=True, choices=PERSON_CHOISES)
-    image  = models.FileField(upload_to ='images/', null=True)
-    image_nd_array = NDArrayField(shape=(128), dtype=np.float32, null=True)
+    career                  = models.TextField(max_length=15, null=True, choices=PERSON_CHOISES)
+    image                   = models.FileField(upload_to ='images/', null=True)
+    image_original_nd_array = NDArrayField(shape=(128), dtype=np.float32, null=True)
+    image_pinfase_nd_array  = NDArrayField(shape=(128), dtype=np.float32, null=True)
+    image_lfw_nd_array      = NDArrayField(shape=(128), dtype=np.float32, null=True)
 
     def __str__(self):
         return self.name
 
-# @receiver(signals.post_save, sender=Person)
-# def create_person(sender, instance, **kwargs):
-#     image = np.asarray(Image.open(instance.image))
-#     image = cv2.resize(image, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
-#     image = np.array(image, dtype='float32') / 255
-#     image = np.expand_dims(image, axis=0)
-
-#     instance.image_nd_array = lfw_trained_model.predict(image)
-#     instance.save()
-
-
-
     def save(self, *args, **kwargs):
-        image = np.asarray(Image.open(self.image)) # already RGB, so no need cv2.cvtColor
-        image = cv2.resize(image, tuple(reversed(input_shape[:-1])), interpolation=cv2.INTER_AREA)
-        image = np.array(image, dtype='float32') / 255
-        image = np.expand_dims(image, axis=0)
+        image = Image(np.asarray(PIL_Image.open(self.image))) # already RGB, so no need cv2.cvtColor
+        image.resize(Shape(96, 96))
+        image.normalize()
 
-        self.image_nd_array = lfw_trained_model.predict(image)
+        # self.image_original_nd_array = openface_model.encode(image)
+        self.image_pinfase_nd_array  = pinface_trained_model.encode(image)
+        # self.image_lfw_nd_array      = lfw_trained_model.encode(image)
         super(Person, self).save(*args, **kwargs)

@@ -9,8 +9,12 @@ from django.core.files import File
 from django.http import HttpResponse
 from .models import Camera, PlaybackVideo, Person
 from hikvisionapi import Client
-from .utils import recognize
-
+from .RecognizeAlgorithm import RecognizeAlgorithm
+from .constants import (
+        lfw_trained_model,
+        openface_model,
+        pinface_trained_model
+    )
 import numpy as np
 import base64
 import cv2
@@ -128,7 +132,9 @@ def predict_image(request):
     image = request.FILES.get('image')
     image = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     persons = Person.objects.all()
-    image = recognize(image, persons)
+    image = RecognizeAlgorithm.recognize(image, persons, lfw_trained_model)
+    # image = RecognizeAlgorithm.recognize(image, persons, openface_model)
+    # image = RecognizeAlgorithm.recognize(image, persons, pinface_trained_model)
 
     retval, buffer = cv2.imencode('.jpg', image)
     data = base64.b64encode(buffer.tobytes())
