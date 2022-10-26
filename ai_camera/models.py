@@ -42,8 +42,8 @@ class Person(models.Model):
     ]
     career                  = models.TextField(max_length=15, null=True, choices=PERSON_CHOISES)
     image                   = models.FileField(upload_to ='images/', null=True)
-    image_original_nd_array = NDArrayField(shape=(128), dtype=np.float32, null=True)
-    image_pinfase_nd_array  = NDArrayField(shape=(128), dtype=np.float32, null=True)
+    # image_original_nd_array = NDArrayField(shape=(128), dtype=np.float32, null=True)
+    # image_pinfase_nd_array  = NDArrayField(shape=(128), dtype=np.float32, null=True)
     image_lfw_nd_array      = NDArrayField(shape=(128), dtype=np.float32, null=True)
 
     def __str__(self):
@@ -55,6 +55,6 @@ class Person(models.Model):
         image.normalize()
 
         # self.image_original_nd_array = openface_model.encode(image)
-        self.image_pinfase_nd_array  = pinface_trained_model.encode(image)
-        # self.image_lfw_nd_array      = lfw_trained_model.encode(image)
+        # self.image_pinfase_nd_array  = pinface_trained_model.encode(image)
+        self.image_lfw_nd_array      = lfw_trained_model.encode(image)
         super(Person, self).save(*args, **kwargs)

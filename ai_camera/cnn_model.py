@@ -14,7 +14,7 @@ def create_models():
     pinface_trained_model.load_weights(join(dirname(__file__), "weights/weights-pin-faces.h5"))
 
     # Removing last layer in trained models
-    lfw_trained_model.to_useable_net()
-    pinface_trained_model.to_useable_net()
+    lfw_trained_model     = lfw_trained_model.to_useable_net()
+    pinface_trained_model = pinface_trained_model.to_useable_net()
     return (openface_model, lfw_trained_model, pinface_trained_model)
 

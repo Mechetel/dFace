@@ -15,8 +15,10 @@ from .constants import (
         openface_model,
         pinface_trained_model
     )
+from .utils import to_base64
 import numpy as np
 import base64
+import json
 import cv2
 import os
 
@@ -119,10 +121,7 @@ def get_picture_from_ip(request):
     cam             = Client('http://' + ip_cam_adress, ip_cam_user, ip_cam_password)
     image           = cam.Streaming.channels[102].picture(method='get', type='opaque_data')
     image = cv2.imdecode(np.fromstring(image.content, np.uint8), cv2.IMREAD_UNCHANGED)
-
-    retval, buffer = cv2.imencode('.jpg', image)
-    data = base64.b64encode(buffer.tobytes())
-    result = data.decode()
+    result = to_base64(image)
 
     return HttpResponse(result, content_type='image/jpeg')
 
@@ -132,12 +131,8 @@ def predict_image(request):
     image = request.FILES.get('image')
     image = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     persons = Person.objects.all()
-    image = RecognizeAlgorithm.recognize(image, persons, lfw_trained_model)
+    result = RecognizeAlgorithm.recognize(image, persons, lfw_trained_model)
     # image = RecognizeAlgorithm.recognize(image, persons, openface_model)
     # image = RecognizeAlgorithm.recognize(image, persons, pinface_trained_model)
 
-    retval, buffer = cv2.imencode('.jpg', image)
-    data = base64.b64encode(buffer.tobytes())
-    result = data.decode()
-
-    return HttpResponse(result, content_type='image/jpeg')
+    return HttpResponse(json.dumps(result), content_type="application/json")

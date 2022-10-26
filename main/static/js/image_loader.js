@@ -46,8 +46,9 @@ btnPredict.addEventListener("click", function() {
         contentType: false,
         cache: false,
         success: function (data) {
-          pred_image.src = "data:image/jpeg;base64," + data;
-          predictedImage.appendChild(pred_image);
+          console.log(data);
+          // pred_image.src = "data:image/jpeg;base64," + data;
+          // predictedImage.appendChild(pred_image);
         },
         error: function (e) {
           console.log(e);

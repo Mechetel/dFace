@@ -14,7 +14,7 @@ class Image:
         self._data = cv2.cvtColor(self._data, cv2.COLOR_BGR2RGB)
 
     def resize(self, shape):
-        self._data = cv2.resize(self._data, (shape.get_width(), shape.get_height()), interpolation=cv2.INTER_AREA)
+        self._data = cv2.resize(self._data, tuple(reversed((shape.get_width(), shape.get_height()))), interpolation=cv2.INTER_AREA)
 
     def getPixels(self):
         return self._data

@@ -11,7 +11,7 @@ class FaceRecognitionNet(abc.ABC):
         return self._input_shape
 
     def encode(self, image):
-        predictions = self._model.predict(np.array(image.getPixels()))
+        predictions = self._model.predict(image.getPixels())
         return predictions
 
     def load_weights(self, file):

@@ -1,6 +1,7 @@
 from tensorflow.keras.layers import Conv2D, Dense, ZeroPadding2D, BatchNormalization, Activation
 import tensorflow as tf
-
+import base64
+import cv2
 
 def LRN2D(x):
     return tf.nn.lrn(x, alpha=1e-4, beta=0.75)
@@ -26,3 +27,9 @@ def conv2d_bn(x,
         return tensor
     tensor = Conv2D(cv2_out, cv2_filter, strides=cv2_strides, name=layer+'_conv'+'2')(tensor)
     return tensor
+
+def to_base64(image):
+    retval, buffer = cv2.imencode('.jpg', image)
+    data = base64.b64encode(buffer.tobytes())
+    return data.decode()
+

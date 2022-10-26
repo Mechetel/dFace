@@ -4,6 +4,7 @@ from .constants import (
     )
 from .Image import Image
 from .Shape import Shape
+from .utils import to_base64
 import numpy as np
 import cv2
 import os
@@ -55,6 +56,7 @@ class RecognizeAlgorithm(object):
     @staticmethod
     def recognize(image, persons, model):
         face_list = mtcnn.detect_faces(image)
+        persons_to_json = {}
 
         persons_array = []
         for person in persons:
@@ -102,10 +104,18 @@ class RecognizeAlgorithm(object):
 
                 # person = comparison['person_name']
 
+                persons_to_json[person] = to_base64(face_data)
+
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
                 RecognizeAlgorithm.__draw_keypoints(image, keypoints)
                 cv2.rectangle(image, (xx1, yy1), (xx2, yy2), (0, 255, 0), thickness)
                 cv2.putText(image, str(person), (x1, y2 + padding),
                             cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), thickness)
 
-        return image
+
+        found_persons_with_image_json = {
+                "image": to_base64(image),
+                "persons": persons_to_json
+            }
+
+        return found_persons_with_image_json
