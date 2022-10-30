@@ -1,3 +1,5 @@
+import { generate_table, edit_persons_data } from "./fetch_snap.js";
+
 var image    = new Image();
 image.height = 480;
 image.width  = 640;
@@ -10,6 +12,8 @@ var formFile        = document.getElementById("formFile");
 var btnPredict      = document.getElementById("btn-predict");
 var downloadedImage = document.getElementById("downloadedImage");
 var predictedImage  = document.getElementById("predictedImage");
+
+var personsTable    = document.getElementById("predTable");
 
 formFile.addEventListener("change", function() {
   const file = formFile.files[0];
@@ -46,9 +50,14 @@ btnPredict.addEventListener("click", function() {
         contentType: false,
         cache: false,
         success: function (data) {
-          console.log(data);
-          // pred_image.src = "data:image/jpeg;base64," + data;
-          // predictedImage.appendChild(pred_image);
+          let { image, persons } = data
+          let edited_persons_data = edit_persons_data(persons)
+          console.log(edited_persons_data);
+
+          pred_image.src = "data:image/jpeg;base64," + image;
+          predictedImage.appendChild(pred_image);
+
+          personsTable.innerHTML = generate_table(persons);
         },
         error: function (e) {
           console.log(e);

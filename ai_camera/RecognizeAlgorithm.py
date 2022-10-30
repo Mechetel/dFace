@@ -56,7 +56,7 @@ class RecognizeAlgorithm(object):
     @staticmethod
     def recognize(image, persons, model):
         face_list = mtcnn.detect_faces(image)
-        persons_to_json = {}
+        persons_to_json = []
 
         persons_array = []
         for person in persons:
@@ -67,9 +67,6 @@ class RecognizeAlgorithm(object):
                 })
 
         (image_height, image_widht, _) = np.shape(image)
-
-        #scaling for better image experience
-        (font_scale, thickness, padding) = RecognizeAlgorithm.__scaling_image(image_height, image_widht)
 
         for face in face_list:
             box        = face["box"]
@@ -85,10 +82,14 @@ class RecognizeAlgorithm(object):
             (xx1, yy1)           = [c - half_width  for c in (xx1, yy1)]
             (xx2, yy2)           = [c + half_height for c in (xx2, yy2)]
 
+            face["xy1"] = (x1, y1)
+            face["xy2"] = (x2, y2)
+            face["xxyy1"] = (xx1, yy1)
+            face["xxyy2"] = (xx2, yy2)
+
             if xx1 < 0 or yy1 < 0 or xx2 > image_widht or yy2 > image_height:
                 #can't be recognized
-                cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
-                RecognizeAlgorithm.__draw_keypoints(image, keypoints)
+                continue
             else:
                 #have enough space to be recognized
                 face_data = image[yy1:yy2, xx1:xx2]
@@ -104,14 +105,36 @@ class RecognizeAlgorithm(object):
 
                 # person = comparison['person_name']
 
-                persons_to_json[person] = to_base64(face_data)
+                face["person"] = person
+                print(face)
 
+                json_person = {}
+                json_person['name'] = person
+                json_person['base64_data'] = to_base64(face_data)
+                persons_to_json.append(json_person)
+
+        #scaling for better image experience
+        (font_scale, thickness, padding) = RecognizeAlgorithm.__scaling_image(image_height, image_widht)
+
+        for face in face_list:
+            (x1, y1)   = face["xy1"]
+            (x2, y2)   = face["xy2"]
+            (xx1, yy1) = face["xxyy1"]
+            (xx2, yy2) = face["xxyy2"]
+
+            if xx1 < 0 or yy1 < 0 or xx2 > image_widht or yy2 > image_height:
+                #can't be recognized
+                cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
+                RecognizeAlgorithm.__draw_keypoints(image, keypoints)
+            else:
+                #have enough space to be recognized
+
+                person     = face["person"]
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
                 RecognizeAlgorithm.__draw_keypoints(image, keypoints)
                 cv2.rectangle(image, (xx1, yy1), (xx2, yy2), (0, 255, 0), thickness)
                 cv2.putText(image, str(person), (x1, y2 + padding),
                             cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), thickness)
-
 
         found_persons_with_image_json = {
                 "image": to_base64(image),

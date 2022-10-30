@@ -2,11 +2,12 @@ import { fetch_snapshot, predictImage } from "./fetch_snap.js";
 
 var img = new Image();
 
-var btnPredict = document.getElementById("btn-predict");
-var snapshot = document.getElementById("snapshot");
+var btnPredict   = document.getElementById("btn-predict");
+var snapshot     = document.getElementById("snapshot");
+var personsTable = document.getElementById("predTable");
 
 btnPredict.addEventListener("click", function () {
-  predictImage(img, snapshot, "../../predict/");
+  predictImage(img, snapshot, "../../predict/", personsTable);
   btnPredict.disabled = true;
 });
 

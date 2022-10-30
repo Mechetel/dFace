@@ -3,15 +3,17 @@ import { predictImage } from "./fetch_snap.js";
 var img = new Image();
 
 // The buttons to start & stop stream and to capture the image
-var btnStart   = document.getElementById("btn-start");
-var btnStop    = document.getElementById("btn-stop");
-var btnCapture = document.getElementById("btn-capture");
-var btnPredict = document.getElementById("btn-predict");
+var btnStart     = document.getElementById("btn-start");
+var btnStop      = document.getElementById("btn-stop");
+var btnCapture   = document.getElementById("btn-capture");
+var btnPredict   = document.getElementById("btn-predict");
 
 // The stream & capture
-var stream     = document.getElementById("stream");
-var canvas     = document.getElementById("canvas");
-var snapshot   = document.getElementById("snapshot");
+var stream       = document.getElementById("stream");
+var canvas       = document.getElementById("canvas");
+var snapshot     = document.getElementById("snapshot");
+
+var personsTable = document.getElementById("predTable");
 
 // The video stream
 var cameraStream = null;
@@ -20,7 +22,7 @@ var cameraStream = null;
 btnStart.addEventListener("click", startStreaming);
 btnStop.addEventListener("click", stopStreaming);
 btnCapture.addEventListener("click", captureSnapshot);
-btnPredict.addEventListener("click", function(){predictImage(img, snapshot, "../predict/"); btnPredict.disabled = true;});
+btnPredict.addEventListener("click", function(){predictImage(img, snapshot, "../predict/", predTable); btnPredict.disabled = true;});
 
 // Start Streaming
 function startStreaming() {
