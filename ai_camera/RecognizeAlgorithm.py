@@ -54,6 +54,18 @@ class RecognizeAlgorithm(object):
         return comparations
 
     @staticmethod
+    def __get_face_xy_attributes(box):
+        x1, y1, face_widht, face_height = box
+        (x2, y2) = (x1 + face_widht, y1 + face_height)
+
+        (xx1, yy1, xx2, yy2) = [int(p) for p in (x1, y1, x2, y2)]
+        half_width           = int((xx2 - xx1) / 2.8)
+        half_height          = int((yy2 - yy1) / 2.8)
+        (xx1, yy1)           = [c - half_width  for c in (xx1, yy1)]
+        (xx2, yy2)           = [c + half_height for c in (xx2, yy2)]
+        return ((x1,y1), (x2,y2), (xx1,yy1), (xx2,yy2))
+
+    @staticmethod
     def recognize(image, persons, model):
         face_list = mtcnn.detect_faces(image)
         persons_to_json = []
@@ -73,19 +85,9 @@ class RecognizeAlgorithm(object):
             confidence = face["confidence"]
             keypoints  = face["keypoints"]
 
-            x1,y1, face_widht, face_height = box
-            (x2,y2) = (x1 + face_widht, y1 + face_height)
-
-            (xx1, yy1, xx2, yy2) = [int(p) for p in (x1, y1, x2, y2)]
-            half_width           = int((xx2 - xx1) / 2.8)
-            half_height          = int((yy2 - yy1) / 2.8)
-            (xx1, yy1)           = [c - half_width  for c in (xx1, yy1)]
-            (xx2, yy2)           = [c + half_height for c in (xx2, yy2)]
-
-            face["xy1"] = (x1, y1)
-            face["xy2"] = (x2, y2)
-            face["xxyy1"] = (xx1, yy1)
-            face["xxyy2"] = (xx2, yy2)
+            ((x1,y1), (x2,y2), (xx1,yy1), (xx2,yy2)) = RecognizeAlgorithm.__get_face_xy_attributes(box)
+            face["xy1"],   face["xy2"]   = (x1,  y1),  (x2,  y2)
+            face["xxyy1"], face["xxyy2"] = (xx1, yy1), (xx2, yy2)
 
             if xx1 < 0 or yy1 < 0 or xx2 > image_widht or yy2 > image_height:
                 #can't be recognized
@@ -106,7 +108,6 @@ class RecognizeAlgorithm(object):
                 # person = comparison['person_name']
 
                 face["person"] = person
-                print(face)
 
                 json_person = {}
                 json_person['name'] = person
@@ -117,10 +118,7 @@ class RecognizeAlgorithm(object):
         (font_scale, thickness, padding) = RecognizeAlgorithm.__scaling_image(image_height, image_widht)
 
         for face in face_list:
-            (x1, y1)   = face["xy1"]
-            (x2, y2)   = face["xy2"]
-            (xx1, yy1) = face["xxyy1"]
-            (xx2, yy2) = face["xxyy2"]
+            ((x1,y1), (x2,y2), (xx1,yy1), (xx2,yy2)) = (face["xy1"], face["xy2"], face["xxyy1"], face["xxyy2"])
 
             if xx1 < 0 or yy1 < 0 or xx2 > image_widht or yy2 > image_height:
                 #can't be recognized
@@ -128,8 +126,7 @@ class RecognizeAlgorithm(object):
                 RecognizeAlgorithm.__draw_keypoints(image, keypoints)
             else:
                 #have enough space to be recognized
-
-                person     = face["person"]
+                person = face["person"]
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
                 RecognizeAlgorithm.__draw_keypoints(image, keypoints)
                 cv2.rectangle(image, (xx1, yy1), (xx2, yy2), (0, 255, 0), thickness)

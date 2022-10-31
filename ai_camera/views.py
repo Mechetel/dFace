@@ -41,22 +41,34 @@ def playback(request, cam_id):
     camera = Camera.objects.get(id = cam_id)
 
     if request.method == "POST":
-        PlaybackVideo.objects.filter(camera_id=camera).delete()
-        os.system("rm -r Downloads && mkdir Downloads && cd Downloads && \
-                hikload --server " + camera.ip_cam_adress + \
-                " --user "         + camera.ip_cam_user + \
+        os.system("cd Downloads/" + str(cam_id) + " &&  ls | grep -v '\-conv.mp4$' | xargs rm")
+        os.system("cd Downloads && \
+                hikload --server " + camera.ip_cam_adress   + \
+                " --user "         + camera.ip_cam_user     + \
                 " --password "     + camera.ip_cam_password + \
-                " --downloads "    + str(cam_id) + \
-                " && ls -la"       + str(cam_id))
+                " --downloads "    + str(cam_id)            + \
+                " && cd "          + str(cam_id)            + \
+                " && for i in *-101.mp4; do name=`echo \"$i\" | cut -d'.' -f1`; echo \"$name\"; ffmpeg -n -i \"$i\" \"${name}-conv.mp4\"; done")
 
-        directory = "Downloads/" + str(cam_id)
-        for filename in os.listdir(directory):
-            print(filename)
-            PlaybackVideo(
-                    camera_id=camera,
-                    headline=filename,
-                    video=filename
-                ).save()
+        downloads_dir = f'Downloads'
+        for directory in os.listdir(downloads_dir):
+            if not os.path.isdir(f'{downloads_dir}/{directory}'):
+                continue
+            cam_id = directory
+            camera = Camera.objects.get(id = cam_id)
+            for filename in os.listdir(f'{downloads_dir}/{directory}'):
+                if filename.endswith("-conv.mp4"):
+                    path = f'{downloads_dir}/{directory}/{filename}'
+                    try:
+                        playback_exist = PlaybackVideo.objects.get(filename = filename)
+                    except PlaybackVideo.DoesNotExist:
+                        playback_exist = None
+                    if not playback_exist:
+                        playback = PlaybackVideo(camera_id = camera, filename = filename)
+                        with open(path, 'rb') as f:
+                            data = File(f)
+                            playback.video.save(filename, data, True)
+
 
     playbacks = PlaybackVideo.objects.filter(camera_id=camera)
 

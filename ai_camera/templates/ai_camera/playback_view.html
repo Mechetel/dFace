@@ -9,8 +9,12 @@
   {% if user.is_staff %}
 
     <div class="text-center">
-      <video controls>
-        <source src="{{ playback.video.url }}" type="video/mp4">
+      <h1>{{playback.headline}}</h1>
+      <h4>{{playback.description}}</h4>
+    </div>
+    <div class="video-container text-center">
+      <video controls="" preload="auto" height="720" width="1280">
+        <source src="{{playback.video.url}}" type="video/mp4" />
       </video>
     </div>
 

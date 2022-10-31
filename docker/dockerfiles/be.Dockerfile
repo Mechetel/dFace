@@ -7,7 +7,8 @@ ENV QT_X11_NO_MITSHM 1
 
 RUN apt-get update -qq && apt-get install -y \
       nano\
-      python3-opencv
+      python3-opencv\
+      ffmpeg
 
 ENV APP_USER app
 
