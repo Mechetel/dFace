@@ -33,6 +33,7 @@ class PlaybackVideo(models.Model):
     headline    = models.CharField(max_length=50,        null=True)
     description = models.TextField(max_length=200,       null=True)
     video       = models.FileField(upload_to ='videos/', null=True)
+    recognized  = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return str(self.camera_id) + ": " + self.headline

@@ -53,6 +53,7 @@ class RecognizeAlgorithm(object):
         comparations = sorted(comparations, key=lambda x: x['distance'])
         return comparations
 
+
     @staticmethod
     def __get_face_xy_attributes(box):
         x1, y1, face_widht, face_height = box
@@ -64,6 +65,7 @@ class RecognizeAlgorithm(object):
         (xx1, yy1)           = [c - half_width  for c in (xx1, yy1)]
         (xx2, yy2)           = [c + half_height for c in (xx2, yy2)]
         return ((x1,y1), (x2,y2), (xx1,yy1), (xx2,yy2))
+
 
     @staticmethod
     def recognize(image, persons, model):
@@ -95,7 +97,6 @@ class RecognizeAlgorithm(object):
             else:
                 #have enough space to be recognized
                 face_data = image[yy1:yy2, xx1:xx2]
-
                 comparison = RecognizeAlgorithm.__compare(face_data, persons_array, model)[0]
                 print('min distance: ' + str(comparison['distance']))
                 positive = comparison['distance'] < 1
@@ -108,7 +109,6 @@ class RecognizeAlgorithm(object):
                 # person = comparison['person_name']
 
                 face["person"] = person
-
                 json_person = {}
                 json_person['name'] = person
                 json_person['base64_data'] = to_base64(face_data)
@@ -121,11 +121,9 @@ class RecognizeAlgorithm(object):
             ((x1,y1), (x2,y2), (xx1,yy1), (xx2,yy2)) = (face["xy1"], face["xy2"], face["xxyy1"], face["xxyy2"])
 
             if xx1 < 0 or yy1 < 0 or xx2 > image_widht or yy2 > image_height:
-                #can't be recognized
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
                 RecognizeAlgorithm.__draw_keypoints(image, keypoints)
             else:
-                #have enough space to be recognized
                 person = face["person"]
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
                 RecognizeAlgorithm.__draw_keypoints(image, keypoints)
@@ -139,3 +137,75 @@ class RecognizeAlgorithm(object):
             }
 
         return found_persons_with_image_json
+
+
+    @staticmethod
+    def recognize_video(videos_dir, filename, persons, model):
+        cap = cv2.VideoCapture(f'{videos_dir}/{filename}');
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        out = cv2.VideoWriter(f'{videos_dir}/r-{filename}', cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), fps, (width, height))
+
+        persons_array = []
+        for person in persons:
+            persons_array.append({
+                'person_name': person.name,
+                'person_image': person.image.url,
+                'person_image_lfw_nd_array': person.image_lfw_nd_array
+                })
+
+        (font_scale, thickness, padding) = RecognizeAlgorithm.__scaling_image(height, width)
+
+        for frame_idx in range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
+            ret, image = cap.read()
+            recognized_image = image
+            print(frame_idx) #===============================
+
+            face_list = mtcnn.detect_faces(image)
+            (image_height, image_width, _) = np.shape(image)
+
+            for face in face_list:
+                box        = face["box"]
+                confidence = face["confidence"]
+                keypoints  = face["keypoints"]
+
+                ((x1,y1), (x2,y2), (xx1,yy1), (xx2,yy2)) = RecognizeAlgorithm.__get_face_xy_attributes(box)
+                face["xy1"],   face["xy2"]   = (x1,  y1),  (x2,  y2)
+                face["xxyy1"], face["xxyy2"] = (xx1, yy1), (xx2, yy2)
+
+                if xx1 < 0 or yy1 < 0 or xx2 > image_width or yy2 > image_height:
+                    continue
+                else:
+                    face_data = image[yy1:yy2, xx1:xx2]
+                    comparison = RecognizeAlgorithm.__compare(face_data, persons_array, model)[0]
+                    print('min distance: ' + str(comparison['distance']))
+                    positive = comparison['distance'] < 1.1
+
+                    if positive:
+                        person = comparison['person_name']
+                    else:
+                        person = "unknown"
+
+                    face["person"] = person
+
+            for face in face_list:
+                ((x1,y1), (x2,y2), (xx1,yy1), (xx2,yy2)) = (face["xy1"], face["xy2"], face["xxyy1"], face["xxyy2"])
+
+                if xx1 < 0 or yy1 < 0 or xx2 > image_width or yy2 > image_height:
+                    cv2.rectangle(recognized_image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
+                    RecognizeAlgorithm.__draw_keypoints(recognized_image, keypoints)
+                else:
+                    person = face["person"]
+                    cv2.rectangle(recognized_image, (x1, y1), (x2, y2), (0, 0, 255), thickness)
+                    RecognizeAlgorithm.__draw_keypoints(recognized_image, keypoints)
+                    cv2.rectangle(recognized_image, (xx1, yy1), (xx2, yy2), (0, 255, 0), thickness)
+                    cv2.putText(recognized_image, str(person), (x1, y2 + padding),
+                                cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), thickness)
+
+            out.write(recognized_image)
+            if cv2.waitKey(10) & 0xFF == ord('q'):
+                break
+
+        cap.release()
+        out.release()

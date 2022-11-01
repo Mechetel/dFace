@@ -41,7 +41,6 @@ def playback(request, cam_id):
     camera = Camera.objects.get(id = cam_id)
 
     if request.method == "POST":
-        os.system("cd Downloads/" + str(cam_id) + " &&  ls | grep -v '\-conv.mp4$' | xargs rm")
         os.system("cd Downloads && \
                 hikload --server " + camera.ip_cam_adress   + \
                 " --user "         + camera.ip_cam_user     + \
@@ -68,6 +67,8 @@ def playback(request, cam_id):
                         with open(path, 'rb') as f:
                             data = File(f)
                             playback.video.save(filename, data, True)
+                else:
+                    os.remove(f'{downloads_dir}/{directory}/{filename}')
 
 
     playbacks = PlaybackVideo.objects.filter(camera_id=camera)
@@ -83,6 +84,23 @@ def playback(request, cam_id):
 def playback_view(request, cam_id, play_id):
     camera = Camera.objects.get(id = cam_id)
     playback = PlaybackVideo.objects.filter(camera_id=camera).get(id=play_id)
+
+    if request.method == "POST":
+        persons = Person.objects.all()
+        if not playback.recognized:
+            videos_dir = f'main/media/videos'
+            for filename in os.listdir(videos_dir):
+                if filename == playback.filename:
+                    RecognizeAlgorithm.recognize_video(videos_dir, filename, persons, lfw_trained_model)
+                    with open('{}/r-{}'.format(videos_dir, filename), 'rb') as f:
+                        data = File(f)
+                        playback.video.save('r-{}'.format(filename), data, True)
+                    playback.recognized = True
+                    playback.save()
+
+                    os.remove(f'{videos_dir}/{filename}')
+                    os.remove(f'{videos_dir}/r-{filename}')
+
     context = {
             'playback': playback,
             'camera': camera

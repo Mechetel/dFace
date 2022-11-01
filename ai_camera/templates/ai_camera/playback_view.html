@@ -8,11 +8,27 @@
 {% block content %}
   {% if user.is_staff %}
 
-    <div class="text-center">
-      <h1>{{playback.headline}}</h1>
-      <h4>{{playback.description}}</h4>
+    <div class="container text-center mt-3">
+      <div class="row">
+        <div class="col align-self-center">
+          <h1>{{playback.headline}}</h1>
+          <h4>{{playback.description}}</h4>
+        </div>
+        <div class="col align-self-center">
+          <form method="post">
+            {% csrf_token %}
+
+            {% if playback.recognized %}
+              <button class="btn btn-success" type="submit" disabled>Recognoze playback video</button>
+            {% else %}
+              <button class="btn btn-success" type="submit">Recognoze playback video</button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
     </div>
-    <div class="video-container text-center">
+
+    <div class="video-container text-center mt-3">
       <video controls="" preload="auto" height="720" width="1280">
         <source src="{{playback.video.url}}" type="video/mp4" />
       </video>

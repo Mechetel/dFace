@@ -21,11 +21,28 @@
       </div>
     </div>
     {% if playbacks.all.count > 0 %}
-      <div class="text-center">
-        {% for playback in playbacks %}
-          <a href="{% url 'playback_view' camera.pk playback.pk %}"><i class="fa-solid fa-video"></i> {{ playback.headline }}</a><br>
-        {% endfor %}
+
+      <div class="container mt-3">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Playback</th>
+              <th scope="col">Recognized</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            {% for playback in playbacks %}
+              <tr>
+                <th>{{ playback.id }}</th>
+                <td><a href="{% url 'playback_view' camera.pk playback.pk %}"><i class="fa-solid fa-video"></i> {{ playback.headline }}</a><br></td>
+                <td>{{ playback.recognized }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
+
     {% else %}
       <div class="text-center m-5">
         <h1>No playbacks yet</h1>
