@@ -12,18 +12,10 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
 
-  be:
+  be: &be
     build:
       context: dockerfiles
       dockerfile: be.Dockerfile
-    container_name: be
-    command: >
-      /bin/bash -c "
-      python manage.py makemigrations &&
-      python manage.py migrate &&
-      python manage.py runserver 0.0.0.0:3000"
-    ports:
-      - 3000:3000
     volumes:
       - ..:/app
     env_file:
@@ -33,6 +25,26 @@ services:
       DEBUG: "true"
     links:
       - postgres
+
+  django_be:
+    <<: *be
+    container_name: django_be
+    command: >
+      /bin/bash -c "
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:3000"
+    ports:
+      - 3000:3000
+
+  aiortc_be:
+    <<: *be
+    container_name: aiortc_be
+    command: >
+      /bin/bash -c "
+      uvicorn aiortc_be.server:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - 8000:8000
 
   # nginx:
   #   image: nginx:latest

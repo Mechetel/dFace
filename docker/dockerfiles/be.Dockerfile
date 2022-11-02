@@ -37,7 +37,13 @@ RUN pip3 install --upgrade Django \
                  hikload \
                  hikvisionapi \
                  mtcnn \
+                 aiortc \
+                 aiohttp \
+                 asyncio \
+                 starlette \
+                 fastapi \
+                 jinja2 \
+                 uvicorn[standard]\
                  Pillow
-
 
 USER $APP_USER
