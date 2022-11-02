@@ -2,6 +2,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import cv2
+import numpy as np
 import time
 import asyncio
 
@@ -10,10 +11,23 @@ from aiortc import RTCPeerConnection, RTCSessionDescription, MediaStreamTrack
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.wsgi import WSGIMiddleware
 
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
+
+from django.core.wsgi import get_wsgi_application
+from django.conf import settings
+from importlib.util import find_spec
+
+from ai_camera.RecognizeAlgorithm import RecognizeAlgorithm
+from ai_camera.constants import (
+        lfw_trained_model,
+        openface_model,
+        pinface_trained_model
+    )
 
 from pydantic import BaseModel
 class Offer(BaseModel):
@@ -21,9 +35,25 @@ class Offer(BaseModel):
     type: str
     video_transform: str = None
 
-app = FastAPI()
-pcs = set()
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dFace.settings')
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+django_app = get_wsgi_application()
 
+# Import a model
+# And always import your models after you export settings
+# and you get Django WSGI app
+from ai_camera.models import Person
+
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+pcs = set()
 app.mount("/static", StaticFiles(directory="aiortc_be/static"), name="static")
 templates = Jinja2Templates(directory="aiortc_be/templates")
 
@@ -34,14 +64,19 @@ class VideoTransformTrack(MediaStreamTrack):
         super().__init__()
         self.track = track
         self.transform = transform
+        self.model = lfw_trained_model
+        self.persons = Person.objects.all()
+        self.persons_array = RecognizeAlgorithm.persons_to_dict_array(self.persons)
 
     async def recv(self):
         frame = await self.track.recv()
 
         if self.transform == "recognize":
-            # perform edge detection
             img = frame.to_ndarray(format="bgr24")
-            img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
+
+            (image_height, image_widht, _) = np.shape(img)
+            image_scale_params = RecognizeAlgorithm.scaling_image(image_height, image_widht)
+            recognized_image = RecognizeAlgorithm.predict_image(img, self.persons_array, self.model, image_scale_params)
 
             new_frame = VideoFrame.from_ndarray(img, format="bgr24")
             new_frame.pts = frame.pts

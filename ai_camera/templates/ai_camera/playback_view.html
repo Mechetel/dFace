@@ -37,4 +37,9 @@
   {% else %}
     <p>You have no rights to visit this page</p>
   {% endif %}
+
+  <div class="container">
+    <a href="{% url 'playback' camera.pk %}" type="button" class="btn btn-warning"><i class="fa-solid fa-arrow-left"></i> Go back</a>
+  </div>
+
 {% endblock content %}

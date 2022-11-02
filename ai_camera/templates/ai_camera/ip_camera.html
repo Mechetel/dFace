@@ -52,6 +52,10 @@
     <p>You have no rights to visit this page</p>
   {% endif %}
 
+  <div class="container">
+    <a href="{% url 'ai_camera' %}" type="button" class="btn btn-warning"><i class="fa-solid fa-arrow-left"></i> Go back</a>
+  </div>
+
   <script type="module" src="{% static 'js/ip_camera.js' %}"></script>
   <script type="module" src="{% static 'js/fetch_snap.js' %}"></script>
 {% endblock content %}

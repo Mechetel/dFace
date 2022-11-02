@@ -161,8 +161,8 @@ def predict_image(request):
     image = request.FILES.get('image')
     image = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     persons = Person.objects.all()
-    result = RecognizeAlgorithm.recognize(image, persons, lfw_trained_model)
-    # image = RecognizeAlgorithm.recognize(image, persons, openface_model)
-    # image = RecognizeAlgorithm.recognize(image, persons, pinface_trained_model)
+    result = RecognizeAlgorithm.recognize_pic_to_json(image, persons, lfw_trained_model)
+    # image = RecognizeAlgorithm.recognize_pic_to_json(image, persons, openface_model)
+    # image = RecognizeAlgorithm.recognize_pic_to_json(image, persons, pinface_trained_model)
 
     return HttpResponse(json.dumps(result), content_type="application/json")
